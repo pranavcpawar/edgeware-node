@@ -1,5 +1,6 @@
 #FROM paritytech/ci-linux:production as builder
-FROM decentration/edgeware:v3.3.3 as builder
+#FROM decentration/edgeware:v3.3.3 as builder
+FROM depthhoar/edgeware-node:v3.3.3 as builder
 
 LABEL description="This is the build stage for edgeware. Here we create the binary."
 
