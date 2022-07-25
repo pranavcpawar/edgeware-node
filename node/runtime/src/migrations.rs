@@ -12,10 +12,10 @@ pub type Executive = frame_executive::Executive<
 	(SchedulerMigrationV3,), // append all Migrations here
 >;
 
-use super::*;
-use frame_support::weights::Weight;
-use pallet_indices::Accounts;
-use sp_runtime::traits::{One, Zero};
+//use super::*;
+//use frame_support::weights::Weight;
+//use pallet_indices::Accounts;
+//use sp_runtime::traits::{One, Zero};
 
 // Migration for scheduler(Preimage) pallet | https://github.com/paritytech/substrate/pull/10356
 pub struct SchedulerMigrationV3;
