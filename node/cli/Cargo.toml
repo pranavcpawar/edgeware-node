@@ -110,7 +110,7 @@ edgeware-rpc-primitives-debug = { path = "../../primitives/rpc/debug" }
 edgeware-rpc-trace = { path = "../../client/rpc/trace" }
 
 # CLI-specific dependencies
-sc-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
+sc-cli = { git = "https://github.com/paritytech/substrate", features=["wasmtime"], branch = "polkadot-v0.9.19", optional = true }
 frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
 edgeware-cli-opt = { package = "edgeware-cli-opt", path = "../cli-opt", optional = true }
 
@@ -155,7 +155,7 @@ clap = { version = "3.1.8", features = [ "derive" ], optional = true }
 frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
 substrate-frame-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
-sc-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true }
+sc-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", optional = true, features=["wasmtime"] }
 edgeware-cli-opt = { package = "edgeware-cli-opt", path = "../cli-opt", optional = true }
 
 [features]
