@@ -265,7 +265,7 @@ pub fn new_partial(
 		    check_for_equivocation: Default::default(),
 		    telemetry: telemetry.as_ref().map(|x| x.handle()),
 		    #[cfg(feature = "beresheet-runtime")]
-			compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(1888u32) },
+			compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(8888u32) },
 		    #[cfg(not(feature = "beresheet-runtime"))]
 			compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(14_555_555u32) },
 		}
@@ -554,7 +554,7 @@ pub fn new_full_base(mut config: Configuration,
 				max_block_proposal_slot_portion: None,
 				telemetry: telemetry.as_ref().map(|x| x.handle()),
 				#[cfg(feature = "beresheet-runtime")]
-				compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(1888u32) },
+				compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(8888u32) },
 				#[cfg(not(feature = "beresheet-runtime"))]
 				compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(14_555_555u32) },
 			},
