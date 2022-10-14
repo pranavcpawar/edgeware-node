@@ -404,6 +404,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "beefy-primitives"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "bimap"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1539,7 +1553,7 @@ dependencies = [
  "sc-client-api",
  "sc-client-db",
  "sc-consensus",
- "sc-consensus-aura 0.10.0-dev (git+https://github.com/edgeware-network/edg-aura)",
+ "sc-consensus-aura",
  "sc-consensus-epochs",
  "sc-consensus-slots",
  "sc-finality-grandpa",
@@ -1673,7 +1687,7 @@ dependencies = [
  "pallet-transaction-payment-rpc",
  "pallet-transaction-payment-rpc-runtime-api",
  "sc-client-api",
- "sc-consensus-aura 0.10.0-dev (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19)",
+ "sc-consensus-aura",
  "sc-consensus-epochs",
  "sc-consensus-manual-seal",
  "sc-finality-grandpa",
@@ -5239,6 +5253,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-babe"
+version = "4.0.0-dev"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "log",
+ "pallet-authorship",
+ "pallet-session",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-application-crypto",
+ "sp-consensus-babe",
+ "sp-consensus-vrf",
+ "sp-io",
+ "sp-runtime",
+ "sp-session",
+ "sp-staking",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-bags-list"
 version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
@@ -7266,16 +7304,20 @@ dependencies = [
 [[package]]
 name = "sc-consensus-aura"
 version = "0.10.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
 dependencies = [
  "async-trait",
  "futures 0.3.21",
  "log",
  "parity-scale-codec",
+ "parking_lot 0.12.1",
  "sc-block-builder",
  "sc-client-api",
  "sc-consensus",
  "sc-consensus-slots",
+ "sc-keystore",
+ "sc-network",
+ "sc-network-test",
+ "sc-service",
  "sc-telemetry",
  "sp-api",
  "sp-application-crypto",
@@ -7286,38 +7328,14 @@ dependencies = [
  "sp-consensus-slots",
  "sp-core",
  "sp-inherents",
+ "sp-keyring",
  "sp-keystore",
  "sp-runtime",
+ "sp-timestamp",
+ "sp-tracing",
  "substrate-prometheus-endpoint",
- "thiserror",
-]
-
-[[package]]
-name = "sc-consensus-aura"
-version = "0.10.0-dev"
-source = "git+https://github.com/edgeware-network/edg-aura#c92b1fab4ea61232841710f7ac275cdb963a51c2"
-dependencies = [
- "async-trait",
- "futures 0.3.21",
- "log",
- "parity-scale-codec",
- "sc-block-builder",
- "sc-client-api",
- "sc-consensus",
- "sc-consensus-slots",
- "sc-telemetry",
- "sp-api",
- "sp-application-crypto",
- "sp-block-builder",
- "sp-blockchain",
- "sp-consensus",
- "sp-consensus-aura",
- "sp-consensus-slots",
- "sp-core",
- "sp-inherents",
- "sp-keystore",
- "sp-runtime",
- "substrate-prometheus-endpoint",
+ "substrate-test-runtime-client",
+ "tempfile",
  "thiserror",
 ]
 
@@ -7380,7 +7398,6 @@ dependencies = [
 [[package]]
 name = "sc-consensus-manual-seal"
 version = "0.10.0-dev"
-source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
 dependencies = [
  "assert_matches",
  "async-trait",
@@ -7390,9 +7407,10 @@ dependencies = [
  "jsonrpc-derive",
  "log",
  "parity-scale-codec",
+ "sc-basic-authorship",
  "sc-client-api",
  "sc-consensus",
- "sc-consensus-aura 0.10.0-dev (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19)",
+ "sc-consensus-aura",
  "sc-consensus-babe",
  "sc-consensus-epochs",
  "sc-transaction-pool",
@@ -7410,7 +7428,10 @@ dependencies = [
  "sp-runtime",
  "sp-timestamp",
  "substrate-prometheus-endpoint",
+ "substrate-test-runtime-client",
+ "substrate-test-runtime-transaction-pool",
  "thiserror",
+ "tokio 1.19.2",
 ]
 
 [[package]]
@@ -7676,6 +7697,34 @@ dependencies = [
  "sp-runtime",
  "substrate-prometheus-endpoint",
  "tracing",
+]
+
+[[package]]
+name = "sc-network-test"
+version = "0.8.0"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "async-std",
+ "async-trait",
+ "futures 0.3.21",
+ "futures-timer",
+ "libp2p",
+ "log",
+ "parking_lot 0.12.1",
+ "rand 0.7.3",
+ "sc-block-builder",
+ "sc-client-api",
+ "sc-consensus",
+ "sc-network",
+ "sc-service",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-runtime",
+ "sp-tracing",
+ "substrate-test-runtime",
+ "substrate-test-runtime-client",
 ]
 
 [[package]]
@@ -9301,6 +9350,110 @@ dependencies = [
  "prometheus",
  "thiserror",
  "tokio 1.19.2",
+]
+
+[[package]]
+name = "substrate-test-client"
+version = "2.0.1"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "async-trait",
+ "futures 0.3.21",
+ "hex 0.4.3",
+ "parity-scale-codec",
+ "sc-client-api",
+ "sc-client-db",
+ "sc-consensus",
+ "sc-executor",
+ "sc-offchain",
+ "sc-service",
+ "serde",
+ "serde_json",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-keyring",
+ "sp-keystore",
+ "sp-runtime",
+ "sp-state-machine",
+]
+
+[[package]]
+name = "substrate-test-runtime"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "beefy-primitives",
+ "cfg-if 1.0.0",
+ "frame-support",
+ "frame-system",
+ "frame-system-rpc-runtime-api",
+ "log",
+ "memory-db",
+ "pallet-babe",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "parity-util-mem",
+ "sc-service",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-block-builder",
+ "sp-consensus-aura",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-externalities",
+ "sp-finality-grandpa",
+ "sp-inherents",
+ "sp-io",
+ "sp-keyring",
+ "sp-offchain",
+ "sp-runtime",
+ "sp-runtime-interface",
+ "sp-session",
+ "sp-state-machine",
+ "sp-std",
+ "sp-transaction-pool",
+ "sp-trie",
+ "sp-version",
+ "substrate-wasm-builder",
+ "trie-db",
+]
+
+[[package]]
+name = "substrate-test-runtime-client"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "futures 0.3.21",
+ "parity-scale-codec",
+ "sc-block-builder",
+ "sc-client-api",
+ "sc-consensus",
+ "sp-api",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-runtime",
+ "substrate-test-client",
+ "substrate-test-runtime",
+]
+
+[[package]]
+name = "substrate-test-runtime-transaction-pool"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.19#174735ea1bb5fc4513519c45181d8df63d86f613"
+dependencies = [
+ "futures 0.3.21",
+ "parity-scale-codec",
+ "parking_lot 0.12.1",
+ "sc-transaction-pool",
+ "sc-transaction-pool-api",
+ "sp-blockchain",
+ "sp-runtime",
+ "substrate-test-runtime-client",
+ "thiserror",
 ]
 
 [[package]]

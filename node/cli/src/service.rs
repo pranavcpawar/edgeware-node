@@ -20,7 +20,7 @@
 
 use crate::Cli;
 use edgeware_cli_opt::{EthApi as EthApiCmd, RpcConfig};
-use edgeware_primitives::Block;
+use edgeware_primitives::{Block, BlockNumber};
 use fc_db::DatabaseSource;
 use edgeware_runtime::RuntimeApi;
 // use maplit::hashmap;
@@ -29,7 +29,7 @@ use fc_consensus::FrontierBlockImport;
 use sc_client_api::BlockBackend;
 use fc_rpc_core::types::{FeeHistoryCache, FilterPool};
 use futures::prelude::*;
-use sc_consensus_aura::{self, ImportQueueParams, SlotProportion, StartAuraParams};
+use sc_consensus_aura::{self, CompatibilityMode, ImportQueueParams, SlotProportion, StartAuraParams};
 use sc_network::{Event, NetworkService};
 use sc_service::{config::{Configuration, /*PrometheusConfig*/}, error::Error as ServiceError, RpcHandlers,BasePath, ChainSpec, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryWorker, TelemetryWorkerHandle};
@@ -264,6 +264,10 @@ pub fn new_partial(
 		    can_author_with: sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone()),
 		    check_for_equivocation: Default::default(),
 		    telemetry: telemetry.as_ref().map(|x| x.handle()),
+		    #[cfg(feature = "beresheet-runtime")]
+			compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(1888u32) },
+		    #[cfg(not(feature = "beresheet-runtime"))]
+			compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(14_555_555u32) },
 		}
 	)?;
 
@@ -307,7 +311,7 @@ pub struct NewFullBase {
 
 /// Creates a full service from the configuration.
 pub fn new_full_base(mut config: Configuration,
-	cli: &Cli, 
+	cli: &Cli,
 	rpc_config: RpcConfig
 ) -> Result<NewFullBase, ServiceError> {
 	let sc_service::PartialComponents {
@@ -468,7 +472,7 @@ pub fn new_full_base(mut config: Configuration,
 			fee_history_cache_limit: fee_history_cache_limit,
 			overrides: overrides.clone(),
 			block_data_cache: block_data_cache.clone(),
-			command_sink: None, 
+			command_sink: None,
 		};
 		#[allow(unused_mut)]
 		let mut io = edgeware_rpc::create_full(deps, subscription_task_executor.clone());
@@ -549,6 +553,10 @@ pub fn new_full_base(mut config: Configuration,
 				block_proposal_slot_portion: SlotProportion::new(2f32 / 3f32),
 				max_block_proposal_slot_portion: None,
 				telemetry: telemetry.as_ref().map(|x| x.handle()),
+				#[cfg(feature = "beresheet-runtime")]
+				compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(1888u32) },
+				#[cfg(not(feature = "beresheet-runtime"))]
+				compatibility_mode: CompatibilityMode::UseInitializeBlock { until: BlockNumber::from(14_555_555u32) },
 			},
 		)?;
 
