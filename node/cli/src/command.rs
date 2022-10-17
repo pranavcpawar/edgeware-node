@@ -25,7 +25,7 @@ impl SubstrateCli for Cli {
 	}
 
 	fn impl_version() -> String {
-		"4.0.0".into()
+		"4.0.1".into()
 	}
 
 	fn description() -> String {
