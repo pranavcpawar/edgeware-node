@@ -15,8 +15,8 @@ pallet-contracts-rpc = { git = "https://github.com/paritytech/substrate", branch
 pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
 pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
 sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
-sc-consensus-aura = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
-sc-consensus-manual-seal = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
+sc-consensus-aura = { path = "../consensus-transition/aura", default-features = false }
+sc-consensus-manual-seal = { path = "../consensus-transition/manual-seal", default-features = false }
 sc-consensus-epochs = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
 sc-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
 sc-finality-grandpa-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
