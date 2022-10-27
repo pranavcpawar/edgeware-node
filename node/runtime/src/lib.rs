@@ -141,11 +141,11 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to equal spec_version. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 52,
-	impl_version: 52,
+	spec_version: 53,
+	impl_version: 53,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 2,
-	state_version: 52,
+	state_version: 53,
 };
 
 #[cfg(feature = "beresheet-runtime")]
@@ -157,11 +157,11 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to equal spec_version. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 10052,
-	impl_version: 10052,
+	spec_version: 10053,
+	impl_version: 10053,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 2,
-	state_version: 52,
+	state_version: 53,
 };
 
 /// Native version.
@@ -728,10 +728,7 @@ impl pallet_election_provider_multi_phase::Config for Runtime {
 	type RewardHandler = (); // nothing to do upon rewards
 	type DataProvider = Staking;
 	type Solution = NposSolution16;
-	#[cfg(feature = "fast-runtime")]
-	type Fallback = onchain::UnboundedExecution<OnChainSeqPhragmen>;
-	#[cfg(not(feature = "fast-runtime"))]
-	type Fallback = pallet_election_provider_multi_phase::NoFallback<Self>;
+	type Fallback = onchain::BoundedExecution<OnChainSeqPhragmen>;
 	type GovernanceFallback = onchain::BoundedExecution<OnChainSeqPhragmen>;
 	type Solver = SequentialPhragmen<AccountId, SolutionAccuracyOf<Self>, OffchainRandomBalancing>;
 	type ForceOrigin = EnsureRootOrHalfCouncil;
