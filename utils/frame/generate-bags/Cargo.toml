@@ -11,15 +11,15 @@ readme = "README.md"
 
 [dependencies]
 # FRAME
-frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
-frame-election-provider-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
-pallet-staking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
+frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
+frame-election-provider-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
+frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
+pallet-staking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 
 # primitives
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.19", default-features = false }
+sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 
 # third party
 chrono = { version = "0.4.19" }
-git2 = { version = "0.13.25", default-features = false }
+git2 = { version = "0.14.2", default-features = false }
 num-format = { version = "0.4.0" }
