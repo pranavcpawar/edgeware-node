@@ -52,7 +52,8 @@ pub fn extend_with_tracing<C, BE>(
 	client: Arc<C>,
 	requesters: RpcRequesters,
 	trace_filter_max_count: u32,
-	io: &mut jsonrpc_core::IoHandler<sc_rpc::Metadata>,
+	// io: &mut jsonrpc_core::IoHandler<sc_rpc::Metadata>,
+	io: &mut Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>,
 ) where
 	BE: Backend<Block> + 'static,
 	BE::State: StateBackend<BlakeTwo256>,
@@ -64,15 +65,25 @@ pub fn extend_with_tracing<C, BE>(
 	C::Api: RuntimeApiCollection<StateBackend = BE::State>,
 {
 	if let Some(trace_filter_requester) = requesters.trace {
-		io.extend_with(TraceServer::to_delegate(Trace::new(
-			client,
+		
+		// io.extend_with(TraceServer::to_delegate(Trace::new(
+		// 	client,
+		// 	trace_filter_requester,
+		// 	trace_filter_max_count,
+		// )));
+
+		io.merge(Trace::new(
+			client.clone(),
 			trace_filter_requester,
 			trace_filter_max_count,
-		)));
+		)
+		.into_rpc(),
+	)?;
 	}
 
 	if let Some(debug_requester) = requesters.debug {
-		io.extend_with(DebugServer::to_delegate(Debug::new(debug_requester)));
+		// io.extend_with(DebugServer::to_delegate(Debug::new(debug_requester)));
+		io.merge(Debug::new(debug_requester).into_rpc())?;
 	}
 }
 

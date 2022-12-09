@@ -20,21 +20,29 @@
 //! This is suitable for a testing environment.
 
 use futures::channel::{mpsc::SendError, oneshot};
+
+// jsonrpsee integration
+use jsonrpsee::{
+	core::Error as JsonRpseeError,
+	types::error::{CallError, ErrorObject},
+};
+
 use sc_consensus::ImportResult;
 use sp_blockchain::Error as BlockchainError;
 use sp_consensus::Error as ConsensusError;
 use sp_inherents::Error as InherentsError;
 
 /// Error code for rpc
+/// change data-type from i64 to i32
 mod codes {
-	pub const SERVER_SHUTTING_DOWN: i64 = 10_000;
-	pub const BLOCK_IMPORT_FAILED: i64 = 11_000;
-	pub const EMPTY_TRANSACTION_POOL: i64 = 12_000;
-	pub const BLOCK_NOT_FOUND: i64 = 13_000;
-	pub const CONSENSUS_ERROR: i64 = 14_000;
-	pub const INHERENTS_ERROR: i64 = 15_000;
-	pub const BLOCKCHAIN_ERROR: i64 = 16_000;
-	pub const UNKNOWN_ERROR: i64 = 20_000;
+	pub const SERVER_SHUTTING_DOWN: i32 = 10_000;
+	pub const BLOCK_IMPORT_FAILED: i32 = 11_000;
+	pub const EMPTY_TRANSACTION_POOL: i32 = 12_000;
+	pub const BLOCK_NOT_FOUND: i32 = 13_000;
+	pub const CONSENSUS_ERROR: i32 = 14_000;
+	pub const INHERENTS_ERROR: i32 = 15_000;
+	pub const BLOCKCHAIN_ERROR: i32 = 16_000;
+	pub const UNKNOWN_ERROR: i32 = 20_000;
 }
 
 /// errors encountered by background block authorship task
@@ -71,7 +79,8 @@ pub enum Error {
 	SendError(#[from] SendError),
 	/// Some other error.
 	#[error("Other error: {0}")]
-	Other(#[from] Box<dyn std::error::Error + Send>),
+	// Other(#[from] Box<dyn std::error::Error + Send>),
+	Other(Box<dyn std::error::Error + Send + Sync>),
 }
 
 impl From<ImportResult> for Error {
@@ -87,7 +96,7 @@ impl From<String> for Error {
 }
 
 impl Error {
-	fn to_code(&self) -> i64 {
+	fn to_code(&self) -> i32 {
 		use Error::*;
 		match self {
 			BlockImportError(_) => codes::BLOCK_IMPORT_FAILED,
@@ -101,13 +110,18 @@ impl Error {
 		}
 	}
 }
+// impl From<Error> for jsonrpc_core::Error {
+// 	fn from(error: Error) -> Self {
+// 		jsonrpc_core::Error {
+// 			code: jsonrpc_core::ErrorCode::ServerError(error.to_code()),
+// 			message: format!("{}", error),
+// 			data: None,
+// 		}
+// 	}
+// }
 
-impl From<Error> for jsonrpc_core::Error {
-	fn from(error: Error) -> Self {
-		jsonrpc_core::Error {
-			code: jsonrpc_core::ErrorCode::ServerError(error.to_code()),
-			message: format!("{}", error),
-			data: None,
-		}
+impl From<Error> for JsonRpseeError {
+	fn from(err: Error) -> Self {
+		CallError::Custom(ErrorObject::owned(err.to_code(), err.to_string(), None::<()>)).into()
 	}
 }

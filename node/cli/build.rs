@@ -21,7 +21,6 @@ fn main() {
 	cli::main();
 }
 
-
 #[cfg(feature = "cli")]
 mod cli {
 	include!("src/cli.rs");
