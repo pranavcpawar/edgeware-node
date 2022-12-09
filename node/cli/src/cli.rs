@@ -92,6 +92,7 @@ pub struct Cli {
 	/// Possible subcommand with parameters.
 	#[clap(subcommand)]
 	pub subcommand: Option<Subcommand>,
+
 	#[allow(missing_docs)]
 	#[clap(flatten)]
 	pub run: RunCmd,

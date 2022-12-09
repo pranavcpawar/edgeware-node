@@ -588,7 +588,7 @@ pub fn edgeware_mainnet_config() -> ChainSpec {
 		"edgeware", // chain id
 		ChainType::Live, //chain type
 		edgeware_mainnet_config_genesis, //constructor
-		boot_nodes, //boot noodes Vec<MultiaddrWithPeerId>
+		boot_nodes, //boot nodes Vec<MultiaddrWithPeerId>
 		Some(
 			TelemetryEndpoints::new(vec![(STAGING_TELEMETRY_URL.to_string(), 0)])
 				.expect("Staging telemetry url is valid; qed"),

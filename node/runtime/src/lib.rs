@@ -24,13 +24,15 @@
 #![recursion_limit = "256"]
 
 use codec::{Decode, Encode, MaxEncodedLen};
-use frame_election_provider_support::{onchain, ExtendedBalance, SequentialPhragmen, VoteWeight};
+use frame_election_provider_support::{
+	onchain, ElectionDataProvider, ExtendedBalance, SequentialPhragmen, VoteWeight,
+};
 use frame_support::{
 	construct_runtime,
 	pallet_prelude::Get,
 	parameter_types,
 	traits::{
-		/*AsEnsureOriginWithArg,*/ ConstU128, ConstU16, ConstU32, Currency, EnsureOneOf,
+		/*AsEnsureOriginWithArg,*/ ConstU128, ConstU16, ConstU32, Currency, EitherOfDiverse,
 		EqualPrivilegeOnly, Everything, Imbalance, InstanceFilter, KeyOwnerProofSystem,
 		LockIdentifier, Nothing, OnUnbalanced, U128CurrencyToVote, FindAuthor,
 	},
@@ -585,6 +587,7 @@ impl pallet_staking::BenchmarkingConfig for StakingBenchmarkingConfig {
 impl pallet_staking::Config for Runtime {
 	type MaxNominations = MaxNominations;
 	type Currency = Balances;
+	type CurrencyBalance = Balance;
 	type UnixTime = Timestamp;
 	type CurrencyToVote = U128CurrencyToVote;
 	type RewardRemainder = Treasury;
@@ -595,7 +598,7 @@ impl pallet_staking::Config for Runtime {
 	type BondingDuration = BondingDuration;
 	type SlashDeferDuration = SlashDeferDuration;
 	/// A super-majority of the council can cancel the slash.
-	type SlashCancelOrigin = EnsureOneOf<
+	type SlashCancelOrigin = EitherOfDiverse<
 		EnsureRoot<AccountId>,
 		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 4>,
 	>;
@@ -622,7 +625,7 @@ parameter_types! {
 	pub const SignedDepositBase: Balance = 1 * DOLLARS;
 	pub const SignedDepositByte: Balance = 1 * CENTS;
 
-	pub SolutionImprovementThreshold: Perbill = Perbill::from_rational(1u32, 10_000);
+	pub BetterUnsignedThreshold: Perbill = Perbill::from_rational(1u32, 10_000);
 
 	// miner configs
 	pub const MultiPhaseUnsignedPriority: TransactionPriority = StakingUnsignedPriority::get() - 1u64;
@@ -693,7 +696,7 @@ impl Get<Option<(usize, ExtendedBalance)>> for OffchainRandomBalancing {
 }
 
 pub struct OnChainSeqPhragmen;
-impl onchain::ExecutionConfig for OnChainSeqPhragmen {
+impl onchain::Config for OnChainSeqPhragmen {
 	type System = Runtime;
 	type Solver = SequentialPhragmen<
 		AccountId,
@@ -702,9 +705,26 @@ impl onchain::ExecutionConfig for OnChainSeqPhragmen {
 	type DataProvider = <Runtime as pallet_election_provider_multi_phase::Config>::DataProvider;
 }
 
-impl onchain::BoundedExecutionConfig for OnChainSeqPhragmen {
+impl onchain::BoundedConfig for OnChainSeqPhragmen {
 	type VotersBound = ConstU32<20_000>;
 	type TargetsBound = ConstU32<2_000>;
+}
+impl pallet_election_provider_multi_phase::MinerConfig for Runtime {
+	type AccountId = AccountId;
+	type MaxLength = MinerMaxLength;
+	type MaxWeight = MinerMaxWeight;
+	type Solution = NposSolution16;
+	type MaxVotesPerVoter = <<Self as pallet_election_provider_multi_phase::Config>::DataProvider as ElectionDataProvider>::MaxVotesPerVoter;
+
+	// The unsigned submissions have to respect the weight of the submit_unsigned call, thus their
+	// weight estimate function is wired to this call's weight.
+	fn solution_weight(v: u32, t: u32, a: u32, d: u32) -> Weight {
+		<
+			<Self as pallet_election_provider_multi_phase::Config>::WeightInfo
+			as
+			pallet_election_provider_multi_phase::WeightInfo
+		>::submit_unsigned(v, t, a, d)
+	}
 }
 
 impl pallet_election_provider_multi_phase::Config for Runtime {
@@ -713,21 +733,24 @@ impl pallet_election_provider_multi_phase::Config for Runtime {
 	type EstimateCallFee = TransactionPayment;
 	type SignedPhase = SignedPhase;
 	type UnsignedPhase = UnsignedPhase;
-	type SolutionImprovementThreshold = SolutionImprovementThreshold;
+	type BetterUnsignedThreshold = BetterUnsignedThreshold;
+	type BetterSignedThreshold = ();
 	type OffchainRepeat = OffchainRepeat;
-	type MinerMaxWeight = MinerMaxWeight;
-	type MinerMaxLength = MinerMaxLength;
+	// type MinerMaxWeight = MinerMaxWeight;
+	// type MinerMaxLength = MinerMaxLength;
 	type MinerTxPriority = MultiPhaseUnsignedPriority;
+	type MinerConfig = Self;
 	type SignedMaxSubmissions = ConstU32<10>;
 	type SignedRewardBase = SignedRewardBase;
 	type SignedDepositBase = SignedDepositBase;
 	type SignedDepositByte = SignedDepositByte;
+	type SignedMaxRefunds = ConstU32<3>;
 	type SignedDepositWeight = ();
 	type SignedMaxWeight = MinerMaxWeight;
 	type SlashHandler = (); // burn slashes
 	type RewardHandler = (); // nothing to do upon rewards
 	type DataProvider = Staking;
-	type Solution = NposSolution16;
+	// type Solution = NposSolution16;
 	type Fallback = onchain::BoundedExecution<OnChainSeqPhragmen>;
 	type GovernanceFallback = onchain::BoundedExecution<OnChainSeqPhragmen>;
 	type Solver = SequentialPhragmen<AccountId, SolutionAccuracyOf<Self>, OffchainRandomBalancing>;
@@ -877,20 +900,20 @@ impl pallet_democracy::Config for Runtime {
 	type ExternalOrigin =
 		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 1, 2>;
 	/// A super-majority can have the next scheduled referendum be a straight majority-carries vote.
-    type ExternalMajorityOrigin = EnsureOneOf<
+    type ExternalMajorityOrigin = EitherOfDiverse<
 	    pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 5>,
 	    frame_system::EnsureRoot<AccountId>,
     >;
 	/// A unanimous council can have the next scheduled referendum be a straight default-carries
 	/// (NTB) vote.
-    type ExternalDefaultOrigin = EnsureOneOf<
+    type ExternalDefaultOrigin = EitherOfDiverse<
 	    pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 1, 1>,
 	    frame_system::EnsureRoot<AccountId>,
     >;
     /// Three fourths of the committee can have an
     /// ExternalMajority/ExternalDefault vote be tabled immediately and with a
     /// shorter voting/enactment period.
-    type FastTrackOrigin = EnsureOneOf<
+    type FastTrackOrigin = EitherOfDiverse<
 	    pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 4>,
 	    frame_system::EnsureRoot<AccountId>,
     >;
@@ -902,7 +925,7 @@ impl pallet_democracy::Config for Runtime {
 		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 2, 3>;
 	// To cancel a proposal before it has been passed, 2/3 of the council must agree or
 	// Root must agree.
-	type CancelProposalOrigin = EnsureOneOf<
+	type CancelProposalOrigin = EitherOfDiverse<
 		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 2, 3>,
 		EnsureRoot<AccountId>,
 	>;
@@ -994,7 +1017,7 @@ impl pallet_elections_phragmen::Config for Runtime {
 	type WeightInfo = pallet_elections_phragmen::weights::SubstrateWeight<Runtime>;
 }
 
-type EnsureRootOrHalfCouncil = EnsureOneOf<
+type EnsureRootOrHalfCouncil = EitherOfDiverse<
 	EnsureRoot<AccountId>,
 	pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
 >;
@@ -1032,11 +1055,11 @@ parameter_types! {
 impl pallet_treasury::Config for Runtime {
 	type PalletId = TreasuryPalletId;
 	type Currency = Balances;
-	type ApproveOrigin = EnsureOneOf<
+	type ApproveOrigin = EitherOfDiverse<
 		EnsureRoot<AccountId>,
 		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 5>,
 	>;
-	type RejectOrigin = EnsureOneOf<
+	type RejectOrigin = EitherOfDiverse<
 		EnsureRoot<AccountId>,
 		pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
 	>;
@@ -1051,6 +1074,7 @@ impl pallet_treasury::Config for Runtime {
 	type SpendFunds = Bounties;
 	type WeightInfo = pallet_treasury::weights::SubstrateWeight<Runtime>;
 	type MaxApprovals = MaxApprovals;
+	type SpendOrigin = frame_support::traits::NeverEnsureOrigin<Balance>;
 }
 
 #[cfg(feature = "fast-runtime")]
@@ -1108,8 +1132,11 @@ parameter_types! {
 	pub const DepositPerByte: Balance = deposit(0, 1);
 	pub const MaxValueSize: u32 = 16 * 1024;
 	// The lazy deletion runs inside on_initialize.
-	pub DeletionWeightLimit: Weight = AVERAGE_ON_INITIALIZE_RATIO *
-		RuntimeBlockWeights::get().max_block;
+	pub DeletionWeightLimit: Weight = RuntimeBlockWeights::get()
+		.per_class
+		.get(DispatchClass::Normal)
+		.max_total
+		.unwrap_or(RuntimeBlockWeights::get().max_block);
 	// The weight needed for decoding the queue should be less or equal than a fifth
 	// of the overall weight dedicated to the lazy deletion.
 	pub DeletionQueueDepth: u32 = ((DeletionWeightLimit::get() / (
@@ -1142,6 +1169,9 @@ impl pallet_contracts::Config for Runtime {
 	type DeletionWeightLimit = DeletionWeightLimit;
 	type Schedule = Schedule;
 	type AddressGenerator = pallet_contracts::DefaultAddressGenerator;
+	type ContractAccessWeight = pallet_contracts::DefaultContractAccessWeight<RuntimeBlockWeights>;
+	type MaxCodeLen = ConstU32<{ 128 * 1024 }>;
+	type RelaxedMaxCodeLen = ConstU32<{ 256 * 1024 }>;
 }
 
 impl pallet_sudo::Config for Runtime {
@@ -1296,6 +1326,7 @@ parameter_types! {
 
 impl pallet_recovery::Config for Runtime {
 	type Event = Event;
+	type WeightInfo = pallet_recovery::weights::SubstrateWeight<Runtime>;
 	type Call = Call;
 	type Currency = Balances;
 	type ConfigDepositBase = ConfigDepositBase;
@@ -1969,6 +2000,8 @@ impl_runtime_apis! {
 			};
 
 			let is_transactional = false;
+			let validate = true;
+			let evm_config = config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config());
 			<Runtime as pallet_evm::Config>::Runner::call(
 				from,
 				to,
@@ -1980,7 +2013,9 @@ impl_runtime_apis! {
 				nonce,
 				access_list.unwrap_or_default(),
 				is_transactional,
-				config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
+				validate,
+				evm_config,
+				// config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
 			).map_err(|err| err.into())
 		}
 
@@ -2004,6 +2039,8 @@ impl_runtime_apis! {
 			};
 
 			let is_transactional = false;
+			let validate = true;
+			let evm_config = config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config());
 			<Runtime as pallet_evm::Config>::Runner::create(
 				from,
 				data,
@@ -2014,7 +2051,9 @@ impl_runtime_apis! {
 				nonce,
 				access_list.unwrap_or_default(),
 				is_transactional,
-				config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
+				validate,
+				evm_config,
+				// config.as_ref().unwrap_or(<Runtime as pallet_evm::Config>::config()),
 			).map_err(|err| err.into())
 		}
 

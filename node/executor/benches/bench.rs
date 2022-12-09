@@ -16,13 +16,14 @@
 
 use codec::{Decode, Encode};
 use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
+use frame_support::Hashable;
+
 use edgeware_executor::Executor;
 use edgeware_primitives::{BlockNumber, Hash};
 use edgeware_runtime::{
 	constants::currency::*, Block, BuildStorage, Call, CheckedExtrinsic, GenesisConfig, Header, UncheckedExtrinsic,
 };
 use edgeware_testing::keyring::*;
-use frame_support::Hashable;
 use sc_executor::{Externalities, NativeExecutor, RuntimeInfo, WasmExecutionMethod};
 use sp_core::{
 	storage::well_known_keys,
