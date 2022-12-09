@@ -32,7 +32,6 @@ use tokio::{
 };
 use tracing::{instrument, Instrument};
 
-use jsonrpc_core::Result;
 use sc_client_api::backend::{Backend, StateBackend, StorageProvider};
 use sc_utils::mpsc::TracingUnboundedSender;
 use sp_api::{ApiExt, BlockId, Core, HeaderT, ProvideRuntimeApi};
@@ -53,6 +52,8 @@ use edgeware_client_evm_tracing::{
 pub use edgeware_rpc_core_trace::{FilterRequest, Trace as TraceT, TraceServer};
 use edgeware_rpc_core_types::{RequestBlockId, RequestBlockTag};
 use edgeware_rpc_primitives_debug::DebugRuntimeApi;
+
+type TxsTraceRes = Result<Vec<TransactionTrace>, String>;
 
 /// RPC handler. Will communicate with a `CacheTask` through a `CacheRequester`.
 pub struct Trace<B, C> {
@@ -230,6 +231,7 @@ where
 	}
 }
 
+#[jsonrpsee::core::async_trait]
 impl<B, C> TraceT for Trace<B, C>
 where
 	B: BlockT<Hash = H256> + Send + Sync + 'static,
@@ -237,11 +239,14 @@ where
 	C: HeaderMetadata<B, Error = BlockChainError> + HeaderBackend<B>,
 	C: Send + Sync + 'static,
 {
-	fn filter(
+	async fn filter(
 		&self,
 		filter: FilterRequest,
-	) -> BoxFuture<'static, jsonrpc_core::Result<Vec<TransactionTrace>>> {
-		self.clone().filter(filter).boxed()
+	) -> jsonrpsee::core::RpcResult<Vec<TransactionTrace>> {
+		self.clone()
+			.filter(filter)
+			.await
+			.map_err(|e| fc_rpc::internal_err(e))
 	}
 }
 
