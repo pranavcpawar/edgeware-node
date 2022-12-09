@@ -15,8 +15,7 @@
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 
 use ethereum_types::U256;
-use jsonrpc_core::Result;
-use jsonrpc_derive::rpc;
+use jsonrpsee::{core::RpcResult, proc_macros::rpc};
 
 mod types;
 
@@ -26,12 +25,12 @@ pub use rpc_impl_TxPool::gen_server::TxPool as TxPoolServer;
 
 #[rpc(server)]
 pub trait TxPool {
-	#[rpc(name = "txpool_content")]
-	fn content(&self) -> Result<TxPoolResult<TransactionMap<Transaction>>>;
+	#[method(name = "txpool_content")]
+	fn content(&self) -> RpcResult<TxPoolResult<TransactionMap<Transaction>>>;
 
-	#[rpc(name = "txpool_inspect")]
-	fn inspect(&self) -> Result<TxPoolResult<TransactionMap<Summary>>>;
+	#[method(name = "txpool_inspect")]
+	fn inspect(&self) -> RpcResult<TxPoolResult<TransactionMap<Summary>>>;
 
-	#[rpc(name = "txpool_status")]
-	fn status(&self) -> Result<TxPoolResult<U256>>;
+	#[method(name = "txpool_status")]
+	fn status(&self) -> RpcResult<TxPoolResult<U256>>;
 }
