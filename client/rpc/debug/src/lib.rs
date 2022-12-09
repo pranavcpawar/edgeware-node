@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 use futures::{future::BoxFuture, FutureExt, SinkExt, StreamExt};
-use jsonrpc_core::Result as RpcResult;
+use jsonrpsee::core::RpcResult;
 pub use edgeware_rpc_core_debug::{Debug as DebugT, DebugServer, TraceParams};
 
 use tokio::{
@@ -62,17 +62,17 @@ impl Debug {
 	}
 }
 
+#[jsonrpsee::core::async_trait]
 impl DebugT for Debug {
 	/// Handler for `debug_traceTransaction` request. Communicates with the service-defined task
 	/// using channels.
-	fn trace_transaction(
+	async fn trace_transaction(
 		&self,
 		transaction_hash: H256,
 		params: Option<TraceParams>,
-	) -> BoxFuture<'static, RpcResult<single::TransactionTrace>> {
+	) -> RpcResult<single::TransactionTrace> {
 		let mut requester = self.requester.clone();
 
-		async move {
 			let (tx, rx) = oneshot::channel();
 			// Send a message from the rpc handler to the service level task.
 			requester
@@ -87,25 +87,21 @@ impl DebugT for Debug {
 
 			// Receive a message from the service level task and send the rpc response.
 			rx.await
-				.map_err(|err| {
-					internal_err(format!("debug service dropped the channel : {:?}", err))
-				})?
+			.map_err(|err| internal_err(format!("debug service dropped the channel : {:?}", err)))?
 				.map(|res| match res {
 					Response::Single(res) => res,
 					_ => unreachable!(),
 				})
-		}
 		.boxed()
 	}
 
-	fn trace_block(
+	async fn trace_block(
 		&self,
 		id: RequestBlockId,
 		params: Option<TraceParams>,
 	) -> BoxFuture<'static, RpcResult<Vec<single::TransactionTrace>>> {
 		let mut requester = self.requester.clone();
 
-		async move {
 			let (tx, rx) = oneshot::channel();
 			// Send a message from the rpc handler to the service level task.
 			requester
@@ -120,14 +116,11 @@ impl DebugT for Debug {
 
 			// Receive a message from the service level task and send the rpc response.
 			rx.await
-				.map_err(|err| {
-					internal_err(format!("debug service dropped the channel : {:?}", err))
-				})?
+			.map_err(|err| internal_err(format!("debug service dropped the channel : {:?}", err)))?
 				.map(|res| match res {
 					Response::Block(res) => res,
 					_ => unreachable!(),
 				})
-		}
 		.boxed()
 	}
 }
@@ -156,6 +149,7 @@ where
 		frontier_backend: Arc<fc_db::Backend<B>>,
 		permit_pool: Arc<Semaphore>,
 		overrides: Arc<OverrideHandle<B>>,
+		raw_max_memory_usage: usize,
 	) -> (impl Future<Output = ()>, DebugRequester) {
 		let (tx, mut rx): (DebugRequester, _) =
 			sc_utils::mpsc::tracing_unbounded("debug-requester");
@@ -185,6 +179,7 @@ where
 											transaction_hash,
 											params,
 											overrides.clone(),
+											raw_max_memory_usage,
 										)
 									})
 									.await
@@ -310,7 +305,11 @@ where
 				Err(internal_err("'pending' blocks are not supported"))
 			}
 			RequestBlockId::Hash(eth_hash) => {
-				match frontier_backend_client::load_hash::<B>(frontier_backend.as_ref(), eth_hash) {
+				match frontier_backend_client::load_hash::<B, C>(
+					client.as_ref(),
+					frontier_backend.as_ref(),
+					eth_hash,
+				) {
 					Ok(Some(id)) => Ok(id),
 					Ok(_) => Err(internal_err("Block hash not found".to_string())),
 					Err(e) => Err(e),
@@ -426,6 +425,7 @@ where
 		transaction_hash: H256,
 		params: Option<TraceParams>,
 		overrides: Arc<OverrideHandle<B>>,
+		raw_max_memory_usage: usize,
 	) -> RpcResult<Response> {
 		let (tracer_input, trace_type) = Self::handle_params(params)?;
 
@@ -440,8 +440,11 @@ where
 			Err(e) => return Err(e),
 		};
 
-		let reference_id =
-			match frontier_backend_client::load_hash::<B>(frontier_backend.as_ref(), hash) {
+		let reference_id = match frontier_backend_client::load_hash::<B, C>(
+			client.as_ref(),
+			frontier_backend.as_ref(),
+			hash,
+		) {
 				Ok(Some(hash)) => hash,
 				Ok(_) => return Err(internal_err("Block hash not found".to_string())),
 				Err(e) => return Err(e),
@@ -547,6 +550,7 @@ where
 							disable_storage,
 							disable_memory,
 							disable_stack,
+							raw_max_memory_usage,
 						);
 						proxy.using(f)?;
 						Ok(Response::Single(
