@@ -15,8 +15,7 @@
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 use ethereum_types::H256;
 use futures::future::BoxFuture;
-use jsonrpc_core::Result as RpcResult;
-use jsonrpc_derive::rpc;
+use jsonrpsee::{core::RpcResult, proc_macros::rpc};
 use edgeware_client_evm_tracing::types::single;
 use edgeware_rpc_core_types::RequestBlockId;
 use serde::Deserialize;
@@ -35,15 +34,16 @@ pub struct TraceParams {
 }
 
 #[rpc(server)]
+#[jsonrpsee::core::async_trait]
 pub trait Debug {
-	#[rpc(name = "debug_traceTransaction")]
-	fn trace_transaction(
+	#[method(name = "debug_traceTransaction")]
+	async fn trace_transaction(
 		&self,
 		transaction_hash: H256,
 		params: Option<TraceParams>,
 	) -> BoxFuture<'static, RpcResult<single::TransactionTrace>>;
-	#[rpc(name = "debug_traceBlockByNumber", alias("debug_traceBlockByHash"))]
-	fn trace_block(
+	#[method(name = "debug_traceBlockByNumber", aliases = ["debug_traceBlockByHash"])]
+	async fn trace_block(
 		&self,
 		id: RequestBlockId,
 		params: Option<TraceParams>,
