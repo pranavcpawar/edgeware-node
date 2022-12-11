@@ -71,7 +71,7 @@ sc-client-db = { git = "https://github.com/paritytech/substrate", branch = "polk
 sc-offchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 sc-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 sc-basic-authorship = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
-sc-service = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
+sc-service = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false, optional = true }
 sc-tracing = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 sc-telemetry = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
 sc-authority-discovery = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.25", default-features = false }
@@ -163,7 +163,7 @@ cli = [
 	"sc-cli",
 	"frame-benchmarking-cli",
 	"substrate-frame-cli",
-	"sc-service/db",
+	"sc-service",
 	"clap",
 	"pallet-contracts/std",
 #	"ethereum-types/std",
