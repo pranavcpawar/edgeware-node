@@ -66,7 +66,7 @@ use sp_runtime::{
 	curve::PiecewiseLinear,
 	generic, impl_opaque_keys,
 	traits::{
-		self, BlakeTwo256, Block as BlockT, ConvertInto, Dispatchable, NumberFor,
+		self, BlakeTwo256, Block as BlockT, DispatchInfoOf, ConvertInto, Dispatchable, NumberFor,
 		OpaqueKeys, PostDispatchInfoOf, SaturatedConversion, StaticLookup,
 	},
 	transaction_validity::{TransactionPriority, TransactionSource, TransactionValidity, TransactionValidityError},
@@ -611,7 +611,7 @@ impl pallet_staking::Config for Runtime {
 	type GenesisElectionProvider = onchain::UnboundedExecution<OnChainSeqPhragmen>;
 	type VoterList = BagsList;
 	type MaxUnlockingChunks = ConstU32<32>;
-	type OnStakerSlash = NominationPools;
+	type OnStakerSlash = ();
 	type WeightInfo = pallet_staking::weights::SubstrateWeight<Runtime>;
 	type BenchmarkingConfig = StakingBenchmarkingConfig;
 }
