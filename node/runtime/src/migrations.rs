@@ -15,13 +15,16 @@ const OLD_CANDIDACY_BOND: Balance = 1000 * DOLLARS;
 const OLD_VOTING_BOND: Balance = 10 * DOLLARS;
 pub struct PhragmenElectionDepositRuntimeUpgrade;
 impl pallet_elections_phragmen::migrations::v3::V2ToV3 for PhragmenElectionDepositRuntimeUpgrade {
-    type Pallet = PhragmenElection;
+	// Note: Discarded from susbtrate/frame/elections-phragmen/src/migrations/v3.rs -> (polkadot-v0.9.25)
+    // type Pallet = PhragmenElection;
     type AccountId = AccountId;
     type Balance = Balance;
 }
 impl OnRuntimeUpgrade for PhragmenElectionDepositRuntimeUpgrade {
     fn on_runtime_upgrade() -> frame_support::weights::Weight {
-        pallet_elections_phragmen::migrations::v3::apply::<Self>(
+		// Note: A new argument is added to fn apply -> (polkadot-v0.9.25)
+        // pallet_elections_phragmen::migrations::v3::apply::<Self>(
+        pallet_elections_phragmen::migrations::v3::apply::<Self, Config>(
             OLD_VOTING_BOND,
             OLD_CANDIDACY_BOND,
         )
@@ -84,7 +87,9 @@ impl frame_system::migrations::V2ToV3 for SystemToTripleRefCount {
 }
 impl OnRuntimeUpgrade for SystemToTripleRefCount {
 	fn on_runtime_upgrade() -> frame_support::weights::Weight {
-		frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self>()
+		// Note: A new argument is added to fn migrate_from_single_to_triple_ref_count -> (polkadot-v0.9.25)
+		// frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self>()
+		frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self, Config>()
 	}
 }
 
