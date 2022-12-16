@@ -174,7 +174,7 @@ std = [
 	"sp-std/std",
 	"rustc-hex",
 	"safe-mix/std",
-	"serde",
+	"serde/std",
 	"pallet-session/std",
 	"sp-api/std",
 	"sp-runtime/std",
