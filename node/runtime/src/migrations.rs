@@ -24,7 +24,7 @@ impl OnRuntimeUpgrade for PhragmenElectionDepositRuntimeUpgrade {
     fn on_runtime_upgrade() -> frame_support::weights::Weight {
 		// Note: A new argument is added to fn apply -> (polkadot-v0.9.25)
         // pallet_elections_phragmen::migrations::v3::apply::<Self>(
-        pallet_elections_phragmen::migrations::v3::apply::<Self, Config>(
+        pallet_elections_phragmen::migrations::v3::apply::<Self, crate::Runtime>(
             OLD_VOTING_BOND,
             OLD_CANDIDACY_BOND,
         )
@@ -89,7 +89,7 @@ impl OnRuntimeUpgrade for SystemToTripleRefCount {
 	fn on_runtime_upgrade() -> frame_support::weights::Weight {
 		// Note: A new argument is added to fn migrate_from_single_to_triple_ref_count -> (polkadot-v0.9.25)
 		// frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self>()
-		frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self, Config>()
+		frame_system::migrations::migrate_from_single_to_triple_ref_count::<Self, crate::Runtime>()
 	}
 }
 
