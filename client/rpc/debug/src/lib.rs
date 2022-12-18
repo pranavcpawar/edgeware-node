@@ -13,9 +13,12 @@
 
 // You should have received a copy of the GNU General Public License
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
-use futures::{future::BoxFuture, FutureExt, SinkExt, StreamExt};
+
+// use futures::{future::BoxFuture, FutureExt, SinkExt, StreamExt};
+
+use futures::{SinkExt, StreamExt};
 use jsonrpsee::core::RpcResult;
-pub use edgeware_rpc_core_debug::{Debug as DebugT, DebugServer, TraceParams};
+pub use edgeware_rpc_core_debug::{/*Debug as DebugT,*/ DebugServer, TraceParams};
 
 use tokio::{
 	self,
@@ -63,7 +66,7 @@ impl Debug {
 }
 
 #[jsonrpsee::core::async_trait]
-impl DebugT for Debug {
+impl DebugServer for Debug {
 	/// Handler for `debug_traceTransaction` request. Communicates with the service-defined task
 	/// using channels.
 	async fn trace_transaction(
@@ -92,14 +95,15 @@ impl DebugT for Debug {
 					Response::Single(res) => res,
 					_ => unreachable!(),
 				})
-		.boxed()
+		// .boxed()
 	}
 
 	async fn trace_block(
 		&self,
 		id: RequestBlockId,
 		params: Option<TraceParams>,
-	) -> BoxFuture<'static, RpcResult<Vec<single::TransactionTrace>>> {
+	// ) -> BoxFuture<'static, RpcResult<Vec<single::TransactionTrace>>> {
+	) -> RpcResult<<Vec<single::TransactionTrace>> {
 		let mut requester = self.requester.clone();
 
 			let (tx, rx) = oneshot::channel();
@@ -121,7 +125,7 @@ impl DebugT for Debug {
 					Response::Block(res) => res,
 					_ => unreachable!(),
 				})
-		.boxed()
+		// .boxed()
 	}
 }
 
@@ -441,7 +445,7 @@ where
 		};
 
 		let reference_id = match frontier_backend_client::load_hash::<B, C>(
-			client.as_ref(),
+			// client.as_ref(),
 			frontier_backend.as_ref(),
 			hash,
 		) {

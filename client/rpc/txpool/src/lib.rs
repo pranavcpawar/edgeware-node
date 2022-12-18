@@ -18,7 +18,7 @@ use ethereum_types::{H160, H256, U256};
 use fc_rpc::{internal_err, public_key};
 use jsonrpsee::core::RpcResult;
 pub use edgeware_rpc_core_txpool::{
-	GetT, Summary, Transaction, TransactionMap, TxPool as TxPoolT, TxPoolResult, TxPoolServer,
+	GetT, Summary, Transaction, TransactionMap, /*TxPool as TxPoolT,*/ TxPoolResult, TxPoolServer,
 };
 use sc_transaction_pool::{ChainApi, Pool};
 use sc_transaction_pool_api::InPoolTransaction;
@@ -157,7 +157,7 @@ impl<B: BlockT, C, A: ChainApi> TxPool<B, C, A> {
 	}
 }
 
-impl<B, C, A> TxPoolT for TxPool<B, C, A>
+impl<B, C, A> TxPoolServer for TxPool<B, C, A>
 where
 	C: ProvideRuntimeApi<B>,
 	C: HeaderMetadata<B, Error = BlockChainError> + HeaderBackend<B>,

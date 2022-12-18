@@ -15,13 +15,13 @@
 // along with Moonbeam.  If not, see <http://www.gnu.org/licenses/>.
 
 use ethereum_types::H160;
-use futures::future::BoxFuture;
+// use futures::future::BoxFuture;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
 use edgeware_client_evm_tracing::types::block::TransactionTrace;
 use edgeware_rpc_core_types::RequestBlockId;
 use serde::Deserialize;
 
-pub use rpc_impl_Trace::gen_server::Trace as TraceServer;
+// pub use rpc_impl_Trace::gen_server::Trace as TraceServer;
 
 #[rpc(server)]
 #[jsonrpsee::core::async_trait]

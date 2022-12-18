@@ -21,7 +21,7 @@ mod types;
 
 pub use crate::types::{Get as GetT, Summary, Transaction, TransactionMap, TxPoolResult};
 
-pub use rpc_impl_TxPool::gen_server::TxPool as TxPoolServer;
+// pub use rpc_impl_TxPool::gen_server::TxPool as TxPoolServer;
 
 #[rpc(server)]
 pub trait TxPool {
