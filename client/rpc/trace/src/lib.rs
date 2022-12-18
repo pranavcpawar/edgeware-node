@@ -100,7 +100,7 @@ where
 			}
 			Some(RequestBlockId::Tag(RequestBlockTag::Earliest)) => Ok(0),
 			Some(RequestBlockId::Tag(RequestBlockTag::Pending)) => {
-				Err(internal_err("'pending' is not supported"))
+				Err("'pending' is not supported")
 			}
 			Some(RequestBlockId::Hash(_)) => Err("Block hash not supported"),
 		}
@@ -212,11 +212,11 @@ where
 				// unless we used the default maximum, in which case we return an error.
 				if traces_amount >= count {
 					if req.count.is_none() {
-						return Err(internal_err(format!(
+						return Err(format!(
 							"the amount of traces goes over the maximum ({}), please use 'after' \
 							and 'count' in your request",
 							self.max_count
-						)));
+						));
 					}
 
 					traces = traces.into_iter().take(count).collect();
@@ -867,7 +867,7 @@ where
 		proxy.using(f)?;
 		let mut traces: Vec<_> =
 			edgeware_client_evm_tracing::formatters::TraceFilter::format(proxy)
-				.ok_or(internal_err("Fail to format proxy"))?;
+				.ok_or("Fail to format proxy")?;
 		// Fill missing data.
 		for trace in traces.iter_mut() {
 			trace.block_hash = eth_block_hash;
