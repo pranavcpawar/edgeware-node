@@ -50,7 +50,7 @@ Build a WASM runtime to be deployed on-chain using [srtool](https://github.com/p
 
 ```
 cargo install --git https://github.com/chevdor/srtool-cli
-srtool build --package edgeware-runtime --runtime-dir node/runtime . --app --json
+srtool build  --root --package edgeware-runtime --runtime-dir node/runtime . --app --json
 ```
 
 Build a WASM runtime for Beresheet:
