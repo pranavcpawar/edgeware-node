@@ -309,7 +309,7 @@ where
 				Err(internal_err("'pending' blocks are not supported"))
 			}
 			RequestBlockId::Hash(eth_hash) => {
-				match frontier_backend_client::load_hash::<B, C>(
+				match frontier_backend_client::load_hash::<B>(
 					// client.as_ref(),
 					frontier_backend.as_ref(),
 					eth_hash,
