@@ -196,10 +196,11 @@ where
 	BE::State: StateBackend<BlakeTwo256>,
 	A: ChainApi<Block = Block> + 'static,
 {
-	use pallet_contracts_rpc::{Contracts, ContractsApi};
+	use pallet_contracts_rpc::{Contracts, ContractsApiServer};
 	// use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
-	use sc_rpc::dev::{Dev, DevApi};
+	use sc_finality_grandpa_rpc::{Grandpa, GrandpaApiServer};
+	use sc_rpc::dev::{Dev, DevApiServer};
 	// use substrate_frame_rpc_system::{FullSystem, SystemApi};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
 

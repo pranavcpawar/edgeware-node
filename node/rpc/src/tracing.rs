@@ -34,8 +34,8 @@ use sp_runtime::traits::{BlakeTwo256, Block as BlockT};
 use sp_api::{HeaderT, ProvideRuntimeApi};
 
 use edgeware_primitives::Block;
-use edgeware_rpc_debug::{Debug, DebugHandler, DebugRequester, DebugServer};
-use edgeware_rpc_trace::{CacheRequester as TraceFilterCacheRequester, CacheTask, Trace, TraceServer};
+use edgeware_rpc_debug::{DebugHandler, DebugRequester};
+use edgeware_rpc_trace::{CacheRequester as TraceFilterCacheRequester, CacheTask};
 use tokio::sync::Semaphore;
 
 #[derive(Clone)]
@@ -47,47 +47,47 @@ pub struct RpcRequesters {
 	pub trace: Option<TraceFilterCacheRequester>,
 }
 
-/// Adds tracing functionality.
-pub fn extend_with_tracing<C, BE>(
-	client: Arc<C>,
-	requesters: RpcRequesters,
-	trace_filter_max_count: u32,
-	// io: &mut jsonrpc_core::IoHandler<sc_rpc::Metadata>,
-	io: &mut Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>,
-) where
-	BE: Backend<Block> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
-	BE::Blockchain: BlockchainBackend<Block>,
-	C: ProvideRuntimeApi<Block> + StorageProvider<Block, BE> + AuxStore,
-	C: BlockchainEvents<Block>,
-	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
-	C: Send + Sync + 'static,
-	C::Api: RuntimeApiCollection<StateBackend = BE::State>,
-{
-	if let Some(trace_filter_requester) = requesters.trace {
+// /// Adds tracing functionality.
+// pub fn extend_with_tracing<C, BE>(
+// 	client: Arc<C>,
+// 	requesters: RpcRequesters,
+// 	trace_filter_max_count: u32,
+// 	// io: &mut jsonrpc_core::IoHandler<sc_rpc::Metadata>,
+// 	io: &mut Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>,
+// ) where
+// 	BE: Backend<Block> + 'static,
+// 	BE::State: StateBackend<BlakeTwo256>,
+// 	BE::Blockchain: BlockchainBackend<Block>,
+// 	C: ProvideRuntimeApi<Block> + StorageProvider<Block, BE> + AuxStore,
+// 	C: BlockchainEvents<Block>,
+// 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
+// 	C: Send + Sync + 'static,
+// 	C::Api: RuntimeApiCollection<StateBackend = BE::State>,
+// {
+// 	if let Some(trace_filter_requester) = requesters.trace {
 		
-		// io.extend_with(TraceServer::to_delegate(Trace::new(
-		// 	client,
-		// 	trace_filter_requester,
-		// 	trace_filter_max_count,
-		// )));
+// 		// io.extend_with(TraceServer::to_delegate(Trace::new(
+// 		// 	client,
+// 		// 	trace_filter_requester,
+// 		// 	trace_filter_max_count,
+// 		// )));
 
-		io.merge(Trace::new(
-			client.clone(),
-			trace_filter_requester,
-			trace_filter_max_count,
-		)
-		.into_rpc(),
-	)?;
-	}
+// 		io.merge(Trace::new(
+// 			client.clone(),
+// 			trace_filter_requester,
+// 			trace_filter_max_count,
+// 		)
+// 		.into_rpc(),
+// 	)?;
+// 	}
 
-	if let Some(debug_requester) = requesters.debug {
-		// io.extend_with(DebugServer::to_delegate(Debug::new(debug_requester)));
-		io.merge(Debug::new(debug_requester).into_rpc())?;
-	}
-}
+// 	if let Some(debug_requester) = requesters.debug {
+// 		// io.extend_with(DebugServer::to_delegate(Debug::new(debug_requester)));
+// 		io.merge(Debug::new(debug_requester).into_rpc())?;
+// 	}
+// }
 
-/// Spawn the tasks that are required to run a Moonbeam tracing node.
+/// Spawn the tasks that are required to run a Edgeware tracing node.
 pub fn spawn_tracing_tasks<B, C, BE>(
 	rpc_config: &edgeware_cli_opt::RpcConfig,
 	params: SpawnTasksParams<B, C, BE>,
@@ -128,6 +128,7 @@ where
 			Arc::clone(&params.frontier_backend),
 			Arc::clone(&permit_pool),
 			Arc::clone(&params.overrides),
+			rpc_config.tracing_raw_max_memory_usage,
 		);
 		(Some(debug_task), Some(debug_requester))
 	} else {
