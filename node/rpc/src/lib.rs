@@ -212,12 +212,24 @@ where
 	};
 
 	let mut io = RpcModule::new(());
-	let FullDeps { client, pool, deny_unsafe, grandpa,
-		
-		graph, is_authority, enable_dev_signer, network, filter_pool,
-		ethapi_cmd, backend, max_past_logs, fee_history_cache, 
-		fee_history_cache_limit, overrides, block_data_cache,
-		command_sink, } = deps;
+	let FullDeps { 
+		client, 
+		pool, 
+		deny_unsafe,
+		grandpa, 
+		graph, 
+		is_authority, 
+		enable_dev_signer, 
+		network, filter_pool,
+		ethapi_cmd, 
+		backend, 
+		max_past_logs, 
+		fee_history_cache, 
+		fee_history_cache_limit, 
+		overrides, 
+		block_data_cache,
+		command_sink, 
+	} = deps;
 
 	let GrandpaDeps {
 		shared_voter_state,
@@ -232,10 +244,10 @@ where
 	// more context: https://github.com/paritytech/substrate/pull/3480
 	// These RPCs should use an asynchronous caller instead.
 	// io.extend_with(ContractsApi::to_delegate(Contracts::new(client.clone())));
-	io.merge(Contracts::new(client.clone()).into_rpc())?;	
+	io.merge(Contracts::new(Arc::clone(&client)).into_rpc())?;	
 	// io.extend_with(TransactionPaymentApi::to_delegate(TransactionPayment::new(client.clone())));
-	io.merge(System::new(client.clone(), pool.clone(), deny_unsafe).into_rpc())?;
-	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+	io.merge(System::new(Arc::clone(&client), Arc::clone(&pool), deny_unsafe).into_rpc())?;
+	io.merge(TransactionPayment::new(Arc::clone(&client)).into_rpc())?;
 	io.merge(
 		Grandpa::new(
 			subscription_executor,
@@ -289,17 +301,18 @@ where
 	
 	io.merge(
 		Eth::new(
-			client.clone(),
-			pool.clone(),
-			graph,
+			Arc::clone(&client),
+			Arc::clone(&pool),
+			graph.clone(),
 			Some(edgeware_runtime::TransactionConverter),
-			network.clone(),
+			Arc::clone(&network),
 			signers,
-			overrides.clone(),
-			backend.clone(),
+			Arc::clone(&overrides),
+			Arc::clone(&backend),
+			// backend.clone(),
 			// Is authority.
 			is_authority,
-			block_data_cache.clone(),
+			Arc::clone(&block_data_cache),
 			fee_history_cache,
 			fee_history_cache_limit,
 		)
@@ -320,7 +333,7 @@ where
 	if let Some(filter_pool) = filter_pool {
 		io.merge(
 			EthFilter::new(
-				client.clone(),
+				Arc::clone(&client),
 				backend,
 				filter_pool,
 				500_usize, // max stored filters
@@ -354,8 +367,9 @@ where
 	io.merge(
 		EthPubSub::new(
 			pool,
-			client.clone(),
-			network.clone(),
+			Arc::clone(&client),
+			Arc::clone(&network),
+			// network.clone(),
 			subscription_task_executor,
 			overrides,
 		)
@@ -364,7 +378,7 @@ where
 
 	io.merge(
 		Net::new(
-			client.clone(),
+			Arc::clone(&client),
 			network,
 			// Whether to format the `peer_count` response as Hex (default) or not.
 			true,
