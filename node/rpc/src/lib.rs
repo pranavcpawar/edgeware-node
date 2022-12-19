@@ -277,7 +277,7 @@ where
 	// 	)?,
 	// ));
 	// io.extend_with(DevApi::to_delegate(Dev::new(client.clone(), deny_unsafe)));
-	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
+	// io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
 
 	let mut signers = Vec::new();
 	if enable_dev_signer {
