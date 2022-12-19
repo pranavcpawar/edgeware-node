@@ -386,7 +386,7 @@ where
 		.into_rpc(),
 	)?;
 
-	io.merge(Web3::new(client).into_rpc())?;
+	io.merge(Web3::new(Arc::clone(&client)).into_rpc())?;
 
 	if ethapi_cmd.contains(&EthApiCmd::Txpool) {
 		
