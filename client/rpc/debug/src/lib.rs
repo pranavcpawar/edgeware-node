@@ -103,7 +103,7 @@ impl DebugServer for Debug {
 		id: RequestBlockId,
 		params: Option<TraceParams>,
 	// ) -> BoxFuture<'static, RpcResult<Vec<single::TransactionTrace>>> {
-	) -> RpcResult<<Vec<single::TransactionTrace>> {
+	) -> RpcResult<Vec<single::TransactionTrace>> {
 		let mut requester = self.requester.clone();
 
 			let (tx, rx) = oneshot::channel();
@@ -310,7 +310,7 @@ where
 			}
 			RequestBlockId::Hash(eth_hash) => {
 				match frontier_backend_client::load_hash::<B, C>(
-					client.as_ref(),
+					// client.as_ref(),
 					frontier_backend.as_ref(),
 					eth_hash,
 				) {
@@ -444,7 +444,7 @@ where
 			Err(e) => return Err(e),
 		};
 
-		let reference_id = match frontier_backend_client::load_hash::<B, C>(
+		let reference_id = match frontier_backend_client::load_hash::<B>(
 			// client.as_ref(),
 			frontier_backend.as_ref(),
 			hash,
