@@ -170,7 +170,7 @@ pub fn create_full<C, P, BE, A>(
 	deps: FullDeps<C, P, BE, A>,
 	subscription_task_executor: SubscriptionTaskExecutor,
 	// backend: Arc<BE>,
-   ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>
+   ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 // ) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>
 // ) -> Result<jsonrpc_core::IoHandler<sc_rpc_api::Metadata>, Box<dyn std::error::Error + Send + Sync>>
 where
