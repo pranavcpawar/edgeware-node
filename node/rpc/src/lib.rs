@@ -460,14 +460,14 @@ where
 		);
 	}
 
-	params.task_manager.spawn_essential_handle().spawn(
-		"frontier-schema-cache-task",
-		Some("frontier"),
-		EthTask::ethereum_schema_cache_task(
-			Arc::clone(&params.client),
-			Arc::clone(&params.frontier_backend),
-		),
-	);
+	// params.task_manager.spawn_essential_handle().spawn(
+	// 	"frontier-schema-cache-task",
+	// 	Some("frontier"),
+	// 	EthTask::ethereum_schema_cache_task(
+	// 		Arc::clone(&params.client),
+	// 		Arc::clone(&params.frontier_backend),
+	// 	),
+	// );
 
 	// Spawn Frontier FeeHistory cache maintenance task.
 	params.task_manager.spawn_essential_handle().spawn(
