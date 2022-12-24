@@ -34,7 +34,7 @@ use edgeware_primitives::{Block, BlockNumber};
 use edgeware_runtime::RuntimeApi;
 
 // Substrate
-use sc_client_api::{BlockchainEvents, ExecutorProvider};
+use sc_client_api::{BlockchainEvents, ExecutorProvider, BlockBackend};
 use sc_consensus_aura::{self, CompatibilityMode, ImportQueueParams, SlotProportion, StartAuraParams};
 use sc_network::{Event, NetworkService};
 use sc_service::{config::{Configuration, /*PrometheusConfig*/}, error::Error as ServiceError, RpcHandlers,BasePath, ChainSpec, TaskManager};
@@ -477,7 +477,7 @@ pub fn new_full_base(mut config: Configuration,
 	let ntw = network.clone();
 	let svs = shared_voter_state.clone();
 	let rpc_builder = 
-move |deny_unsafe, subscription_executor| {
+move |deny_unsafe, subscription_executor:edgeware_rpc::SubscriptionTaskExecutor| {
 		let deps = edgeware_rpc::FullDeps {
 			client: clt.clone(),
 			pool: pool.clone(),
@@ -488,7 +488,7 @@ move |deny_unsafe, subscription_executor| {
 				shared_voter_state: svs.clone(),
 				shared_authority_set: shared_authority_set.clone(),
 				justification_stream: justification_stream.clone(),
-				subscription_executor,
+				subscription_executor: subscription_executor.clone(),
 				finality_provider: finality_proof_provider.clone(),
 			},
 			// Frontier
@@ -506,17 +506,30 @@ move |deny_unsafe, subscription_executor| {
 			block_data_cache: block_data_cache.clone(),
 			command_sink: None,
 		};
-		#[allow(unused_mut)]
-		let mut io = edgeware_rpc::create_full(deps, subscription_task_executor.clone());
+		// #[allow(unused_mut)]
+		// let mut io = edgeware_rpc::create_full(deps, subscription_task_executor.clone());
+		// if ethapi_cmd.contains(&EthApiCmd::Debug) || ethapi_cmd.contains(&EthApiCmd::Trace) {
+		// 	edgeware_rpc::rpc::TracingConfig(
+		// 		// clt.clone(),
+		// 		tracing_requesters.clone(),
+		// 		rpc_config.ethapi_trace_max_count,
+		// 		&mut io,
+		// 	);
+		// }
+		// Ok(io)
 		if ethapi_cmd.contains(&EthApiCmd::Debug) || ethapi_cmd.contains(&EthApiCmd::Trace) {
-			edgeware_rpc::rpc::TracingConfig(
-				// clt.clone(),
-				tracing_requesters.clone(),
-				rpc_config.ethapi_trace_max_count,
-				&mut io,
-			);
+			edgeware_rpc::create_full(
+				deps,
+				subscription_executor,
+				Some(edgeware_rpc::TracingConfig {
+					tracing_requesters: tracing_requesters.clone(),
+					trace_filter_max_count: rpc_config.ethapi_trace_max_count,
+				}),
+			)
+			.map_err(Into::into)
+		} else {
+			edgeware_rpc::create_full(deps, subscription_executor, None).map_err(Into::into)
 		}
-		Ok(io)
 	};
 
 	let rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
