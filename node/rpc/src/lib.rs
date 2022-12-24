@@ -36,7 +36,7 @@ use sc_finality_grandpa::{
 	FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
 };
 // use sc_finality_grandpa_rpc::GrandpaRpcHandler;
-use sc_rpc::SubscriptionTaskExecutor;
+pub use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
 use sc_transaction_pool_api::TransactionPool;
 use sp_api::{HeaderT, ProvideRuntimeApi};
@@ -131,6 +131,11 @@ pub struct FullDeps<C, P, BE, A: ChainApi> {
 // /// A IO handler that uses all Full RPC extensions.
 // pub type IoHandler = jsonrpc_core::IoHandler<sc_rpc::Metadata>;
 ///
+pub struct TracingConfig {
+	pub tracing_requesters: tracing::RpcRequesters,
+	pub trace_filter_max_count: u32,
+}
+
 pub fn overrides_handle<C, BE>(client: Arc<C>) -> Arc<OverrideHandle<Block>>
 where
 	C: ProvideRuntimeApi<Block> + StorageProvider<Block, BE> + AuxStore,
@@ -169,6 +174,7 @@ where
 pub fn create_full<C, P, BE, A>(
 	deps: FullDeps<C, P, BE, A>,
 	subscription_task_executor: SubscriptionTaskExecutor,
+	maybe_tracing_config: Option<TracingConfig>,
 	// backend: Arc<BE>,
    ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 // ) -> jsonrpc_core::IoHandler<sc_rpc::Metadata>
