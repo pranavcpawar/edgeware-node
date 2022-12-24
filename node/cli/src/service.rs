@@ -18,17 +18,23 @@
 
 //! Service implementation. Specialized wrapper over substrate service.
 
+use std::{
+	collections::BTreeMap,
+	str::FromStr,
+	sync::{Arc, Mutex},
+	path::PathBuf,
+};
 use crate::Cli;
+use futures::prelude::*;
+// use maplit::hashmap;
+
+// Edgeware
 use edgeware_cli_opt::{EthApi as EthApiCmd, RpcConfig};
 use edgeware_primitives::{Block, BlockNumber};
-use fc_db::DatabaseSource;
 use edgeware_runtime::RuntimeApi;
-// use maplit::hashmap;
-#[cfg(feature = "frontier-block-import")]
-use fc_consensus::FrontierBlockImport;
-use sc_client_api::BlockBackend;
-use fc_rpc_core::types::{FeeHistoryCache, FilterPool};
-use futures::prelude::*;
+
+// Substrate
+use sc_client_api::{BlockchainEvents, ExecutorProvider};
 use sc_consensus_aura::{self, CompatibilityMode, ImportQueueParams, SlotProportion, StartAuraParams};
 use sc_network::{Event, NetworkService};
 use sc_service::{config::{Configuration, /*PrometheusConfig*/}, error::Error as ServiceError, RpcHandlers,BasePath, ChainSpec, TaskManager};
@@ -36,13 +42,13 @@ use sc_telemetry::{Telemetry, TelemetryWorker, TelemetryWorkerHandle};
 //use sp_consensus::SlotData;
 use sp_core::U256;
 use sp_runtime::traits::Block as BlockT;
-use std::{
-	collections::BTreeMap,
-	str::FromStr,
-	sync::{Arc, Mutex},
-};
-use sc_client_api::ExecutorProvider;
 // use substrate_prometheus_endpoint::Registry;
+
+// Frontier
+use fc_db::Backend as FrontierBackend;
+#[cfg(feature = "frontier-block-import")]
+use fc_consensus::FrontierBlockImport;
+use fc_rpc_core::types::{FeeHistoryCache, FilterPool, FeeHistoryCacheLimit};
 
 type NEWEExecutor = edgeware_executor::NativeElseWasmExecutor<edgeware_executor::EdgewareExecutor>;
 type FullClient = sc_service::TFullClient<Block, RuntimeApi, NEWEExecutor>;
@@ -88,43 +94,55 @@ impl IdentifyVariant for Box<dyn ChainSpec> {
 		self.id().starts_with("beresheet") || self.id().starts_with("tedg")
 	}
 }
+// old frontier-db function 
+// pub fn frontier_database_dir(config: &Configuration, path: &str) -> std::path::PathBuf {
+// 	let config_dir = config
+// 		.base_path
+// 		.as_ref()
+// 		.map(|base_path| base_path.config_dir(config.chain_spec.id()))
+// 		.unwrap_or_else(|| {
+// 			BasePath::from_project("", "", "moonbeam").config_dir(config.chain_spec.id())
+// 		});
+// 	config_dir.join("frontier").join(path)
+// }
 
-pub fn frontier_database_dir(config: &Configuration, path: &str) -> std::path::PathBuf {
-	let config_dir = config
+// new frontier-db function:-
+pub(crate) fn db_config_dir(config: &Configuration) -> PathBuf {
+	config
 		.base_path
 		.as_ref()
 		.map(|base_path| base_path.config_dir(config.chain_spec.id()))
 		.unwrap_or_else(|| {
-			BasePath::from_project("", "", "moonbeam").config_dir(config.chain_spec.id())
-		});
-	config_dir.join("frontier").join(path)
+			BasePath::from_project("","", "moonbeam").config_dir(config.chain_spec.id())
+		})
 }
 
-// TODO This is copied from frontier. It should be imported instead after
-// https://github.com/paritytech/frontier/issues/333 is solved
-pub fn open_frontier_backend(config: &Configuration) -> Result<Arc<fc_db::Backend<Block>>, String> {
-	Ok(Arc::new(fc_db::Backend::<Block>::new(
-		&fc_db::DatabaseSettings {
-			source: match config.database {
-				DatabaseSource::RocksDb { .. } => DatabaseSource::RocksDb {
-					path: frontier_database_dir(&config, "db"),
-					cache_size: 0,
-				},
-				DatabaseSource::ParityDb { .. } => DatabaseSource::ParityDb {
-					path: frontier_database_dir(&config, "paritydb"),
-				},
-				DatabaseSource::Auto { .. } => DatabaseSource::Auto {
-					rocksdb_path: frontier_database_dir(&config, "db"),
-					paritydb_path: frontier_database_dir(&config, "paritydb"),
-					cache_size: 0,
-				},
-				_ => {
-					return Err("Supported db sources: `rocksdb` | `paritydb` | `auto`".to_string())
-				}
-			},
-		},
-	)?))
-}
+// fn open_frontier_backend moved to fc_db
+// // TODO This is copied from frontier. It should be imported instead after
+// // https://github.com/paritytech/frontier/issues/333 is solved
+// pub fn open_frontier_backend(config: &Configuration) -> Result<Arc<fc_db::Backend<Block>>, String> {
+// 	Ok(Arc::new(fc_db::Backend::<Block>::new(
+// 		&fc_db::DatabaseSettings {
+// 			source: match config.database {
+// 				DatabaseSource::RocksDb { .. } => DatabaseSource::RocksDb {
+// 					path: frontier_database_dir(&config, "db"),
+// 					cache_size: 0,
+// 				},
+// 				DatabaseSource::ParityDb { .. } => DatabaseSource::ParityDb {
+// 					path: frontier_database_dir(&config, "paritydb"),
+// 				},
+// 				DatabaseSource::Auto { .. } => DatabaseSource::Auto {
+// 					rocksdb_path: frontier_database_dir(&config, "db"),
+// 					paritydb_path: frontier_database_dir(&config, "paritydb"),
+// 					cache_size: 0,
+// 				},
+// 				_ => {
+// 					return Err("Supported db sources: `rocksdb` | `paritydb` | `auto`".to_string())
+// 				}
+// 			},
+// 		},
+// 	)?))
+// }
 
 // // If we're using prometheus, use a registry with a prefix of `edgeware`.
 // fn set_prometheus_registry(config: &mut Configuration) -> Result<(), ServiceError> {
@@ -137,7 +155,6 @@ pub fn open_frontier_backend(config: &Configuration) -> Result<Arc<fc_db::Backen
 
 // 	Ok(())
 // }
-
 
 /// Builds the PartialComponents for development service
 ///
@@ -156,10 +173,10 @@ pub fn new_partial(
 		(
 			ConsensusResult,
 			Option<FilterPool>,
-			Arc<fc_db::Backend<Block>>,
+			Arc<FrontierBackend<Block>>,
 			Option<Telemetry>,
 			Option<TelemetryWorkerHandle>,
-			FeeHistoryCache,
+			(FeeHistoryCache, FeeHistoryCacheLimit),
 		),
 	>,
 	ServiceError,
@@ -212,10 +229,16 @@ pub fn new_partial(
 		client.clone(),
 	);
 
+	// let frontier_backend = open_frontier_backend(config)?;
+
+	let frontier_backend = Arc::new(FrontierBackend::open(
+		&config.database,
+		&db_config_dir(config),
+	)?);
+
 	let filter_pool: Option<FilterPool> = Some(Arc::new(Mutex::new(BTreeMap::new())));
 	let fee_history_cache: FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
-
-	let frontier_backend = open_frontier_backend(config)?;
+	let fee_history_cache_limit: FeeHistoryCacheLimit = cli.run.fee_history_limit;
 
 	let (grandpa_block_import, grandpa_link) = sc_finality_grandpa::block_import(
 		client.clone(),
@@ -225,8 +248,11 @@ pub fn new_partial(
 	)?;
 
 	#[cfg(feature = "frontier-block-import")]
-	let frontier_block_import =
-		FrontierBlockImport::new(grandpa_block_import.clone(), client.clone(), frontier_backend.clone());
+	let frontier_block_import = FrontierBlockImport::new(
+		grandpa_block_import.clone(), 
+		client.clone(), 
+		frontier_backend.clone(),
+	);
 
 	let justification_import = grandpa_block_import.clone();
 
@@ -235,7 +261,7 @@ pub fn new_partial(
 
 	let import_queue =
 		sc_consensus_aura::import_queue::<sp_consensus_aura::ed25519::AuthorityPair, _, _, _, _, _, _>(
-	    ImportQueueParams {
+	    sc_consensus_aura::ImportQueueParams {
 		    #[cfg(feature = "frontier-block-import")]
 		    block_import: frontier_block_import.clone(),
 		    #[cfg(not(feature = "frontier-block-import"))]
@@ -251,13 +277,10 @@ pub fn new_partial(
 					    slot_duration,
 				    );
 
-    //			let uncles =
-    //				sp_authorship::InherentDataProvider::<<Block as BlockT>::Header>::check_inherents();
-
 			    let dynamic_fee =
 				    pallet_dynamic_fee::InherentDataProvider(U256::from(target_gas_price));
 
-			    Ok((timestamp, slot, /*uncles,*/ dynamic_fee))
+			    Ok((timestamp, slot, dynamic_fee))
 		    },
 		    spawner: &task_manager.spawn_essential_handle(),
 		    registry: config.prometheus_registry(),
@@ -290,7 +313,7 @@ pub fn new_partial(
 			frontier_backend,
 			telemetry,
 			telemetry_worker_handle,
-			fee_history_cache,
+			(fee_history_cache, fee_history_cache_limit),
 		),
 	})
 }
@@ -322,8 +345,15 @@ pub fn new_full_base(mut config: Configuration,
 		keystore_container,
 		select_chain,
 		transaction_pool,
-		other: (import_setup, filter_pool, frontier_backend,
-			mut telemetry, _telementry_worker_handle, _fee_history_cache),
+		other: 
+			(
+				import_setup, 
+				filter_pool, 
+				frontier_backend,
+				mut telemetry, 
+				_telementry_worker_handle, 
+				(fee_history_cache, fee_history_cache_limit)
+			),
 	} = new_partial(&config, cli)?;
 
 	let auth_disc_publish_non_global_ips = config.network.allow_non_globals_in_dht;
@@ -336,6 +366,7 @@ pub fn new_full_base(mut config: Configuration,
 		.network
 		.extra_sets
 		.push(sc_finality_grandpa::grandpa_peers_set_config(grandpa_protocol_name.clone()));
+		
 	let warp_sync = Arc::new(sc_finality_grandpa::warp_proof::NetworkProvider::new(
 		backend.clone(),
 		import_setup.1.shared_authority_set().clone(),
@@ -367,8 +398,8 @@ pub fn new_full_base(mut config: Configuration,
 	let name = config.network.node_name.clone();
 	let enable_grandpa = !config.disable_grandpa;
 	let prometheus_registry = config.prometheus_registry().cloned();
-	let subscription_task_executor =
-		sc_rpc::SubscriptionTaskExecutor::new(task_manager.spawn_handle());
+	// let subscription_task_executor =
+	// 	sc_rpc::SubscriptionTaskExecutor::new(task_manager.spawn_handle());
 	let fee_history_cache: fc_rpc_core::types::FeeHistoryCache = Arc::new(Mutex::new(BTreeMap::new()));
 	let fee_history_cache_limit = cli.run.fee_history_limit;
 	let overrides = edgeware_rpc::overrides_handle(client.clone());
@@ -445,7 +476,8 @@ pub fn new_full_base(mut config: Configuration,
 	let clt = client.clone();
 	let ntw = network.clone();
 	let svs = shared_voter_state.clone();
-	let rpc_extensions_builder = move |deny_unsafe, subscription_executor| {
+	let rpc_builder = 
+move |deny_unsafe, subscription_executor| {
 		let deps = edgeware_rpc::FullDeps {
 			client: clt.clone(),
 			pool: pool.clone(),
@@ -477,8 +509,8 @@ pub fn new_full_base(mut config: Configuration,
 		#[allow(unused_mut)]
 		let mut io = edgeware_rpc::create_full(deps, subscription_task_executor.clone());
 		if ethapi_cmd.contains(&EthApiCmd::Debug) || ethapi_cmd.contains(&EthApiCmd::Trace) {
-			edgeware_rpc::tracing::extend_with_tracing(
-				clt.clone(),
+			edgeware_rpc::rpc::TracingConfig(
+				// clt.clone(),
 				tracing_requesters.clone(),
 				rpc_config.ethapi_trace_max_count,
 				&mut io,
@@ -494,7 +526,8 @@ pub fn new_full_base(mut config: Configuration,
 		task_manager: &mut task_manager,
 		keystore: keystore,
 		transaction_pool: transaction_pool.clone(),
-		rpc_extensions_builder: Box::new(rpc_extensions_builder),
+		rpc_builder: Box::new(rpc_builder),
+		// rpc_extensions_builder: Box::new(rpc_extensions_builder),
 		network: network.clone(),
 		system_rpc_tx: system_rpc_tx,
 		telemetry: telemetry.as_mut(),

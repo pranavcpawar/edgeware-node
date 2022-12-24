@@ -159,6 +159,7 @@ pub fn run() -> Result<()> {
 				fee_history_limit: cli.run.fee_history_limit,
 				max_past_logs: cli.run.max_past_logs,
 				relay_chain_rpc_url: None,
+				tracing_raw_max_memory_usage: cli.run.tracing_raw_max_memory_usage,
 			};
 
 			runner.run_node_until_exit(|config| async move {
