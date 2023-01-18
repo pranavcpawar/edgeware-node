@@ -143,11 +143,11 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to equal spec_version. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 53,
-	impl_version: 53,
+	spec_version: 54,
+	impl_version: 54,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 2,
-	state_version: 53,
+	state_version: 54,
 };
 
 #[cfg(feature = "beresheet-runtime")]
@@ -159,11 +159,11 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	// and set impl_version to equal spec_version. If only runtime
 	// implementation changes and behavior does not, then leave spec_version as
 	// is and increment impl_version.
-	spec_version: 10053,
-	impl_version: 10053,
+	spec_version: 10054,
+	impl_version: 10054,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 2,
-	state_version: 53,
+	state_version: 54,
 };
 
 /// Native version.
