@@ -421,6 +421,16 @@ impl pallet_indices::Config for Runtime {
 	type WeightInfo = pallet_indices::weights::SubstrateWeight<Runtime>;
 }
 
+parameter_types! {
+	pub ProofLimit: u32 = 1024;
+}
+
+impl pallet_atomic_swap::Config for Runtime {
+	type Event = Event;
+	type SwapAction = pallet_atomic_swap::BalanceSwapAction<Self::AccountId, Balances>;
+	type ProofLimit = ProofLimit;
+}
+
 #[cfg(feature = "no-reaping")]
 parameter_types! {
 	pub const ExistentialDeposit: Balance = 0;
@@ -1549,6 +1559,7 @@ construct_runtime!(
 		BaseFee: pallet_base_fee = 41,
 		BagsList: pallet_bags_list = 42,
 		Preimage: pallet_preimage = 43,
+		AtomicSwap: pallet_atomic_swap = 44,
 //		Referenda: pallet_referenda,
 //		ConvictionVoting: pallet_conviction_voting,
 	}
