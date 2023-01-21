@@ -1,6 +1,6 @@
 [package]
 name = "edgeware-rpc"
-version = "4.0.0"
+version = "4.1.0"
 authors = [ "Edgeware", "PureStake" ]
 edition = "2021"
 homepage = "https://moonbeam.network"

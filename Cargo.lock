@@ -1624,7 +1624,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-cli"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "assert_cmd",
  "clap 3.2.23",
@@ -1744,7 +1744,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-executor"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "criterion",
  "edgeware-primitives",
@@ -1773,7 +1773,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-primitives"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "bstringify",
  "frame-system",
@@ -1789,7 +1789,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-rpc"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "edgeware-cli-opt",
  "edgeware-executor",
@@ -2008,7 +2008,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-runtime"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "edge-treasury-reward",
  "edgeware-primitives",
@@ -2110,7 +2110,7 @@ dependencies = [
 
 [[package]]
 name = "edgeware-runtime-interface"
-version = "4.0.0"
+version = "4.1.0"
 dependencies = [
  "edgeware-primitives",
  "parity-scale-codec",
