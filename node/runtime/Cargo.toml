@@ -102,12 +102,12 @@ pallet-bags-list = { git = "https://github.com/paritytech/substrate", branch = "
 
 treasury-reward = { package = "edge-treasury-reward", path = "../../pallets/edge-treasury-reward", default-features = false }
 
-evm-runtime = { git = "https://github.com/rust-blockchain/evm", branch = "master", default-features = false }
+evm-runtime = { git = "https://github.com/rust-blockchain/evm", rev = "01bcbd2205a212c34451d3b4fabc962793b057d3", default-features = false }
 pallet-dynamic-fee = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false }
 pallet-base-fee = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false }
 fp-rpc = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false }
 fp-self-contained = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false }
-evm = { git = "https://github.com/rust-blockchain/evm", branch = "master", default-features = false, features = [ "with-codec" ] }
+evm = { git = "https://github.com/rust-blockchain/evm", rev = "01bcbd2205a212c34451d3b4fabc962793b057d3", default-features = false, features = [ "with-codec" ] }
 
 pallet-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false }
 pallet-ethereum = { git = "https://github.com/paritytech/frontier", branch = "polkadot-v0.9.25", default-features = false, features = ["runtime-benchmarks"] }
