@@ -8,55 +8,53 @@ license = "GPL-3.0-only"
 repository = "https://github.com/PureStake/moonbeam/"
 
 [dependencies]
-futures = { version = "0.3.1", features = ["compat"] }
-jsonrpc-core = "18.0.0"
-jsonrpc-pubsub = "18.0.0"
-pallet-contracts-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus-aura = { path = "../consensus-transition/aura", default-features = false }
-sc-consensus-manual-seal = { path = "../consensus-transition/manual-seal", default-features = false }
-sc-consensus-epochs = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-finality-grandpa-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-network = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-rpc-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-service = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-block-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-consensus-aura = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-core =  { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43"  }
-sp-keystore = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-offchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-storage = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-session = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-transaction-pool-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+futures = { workspace = true, features = ["compat"] }
+jsonrpsee = { workspace = true }
+pallet-contracts-rpc = { workspace = true, default-features = false }
+pallet-transaction-payment-rpc = { workspace = true, default-features = false }
+pallet-transaction-payment-rpc-runtime-api = { workspace = true, default-features = false }
+sc-client-api = { workspace = true, default-features = false }
+sc-consensus-aura = { workspace = true, default-features = false }
+sc-consensus-manual-seal = { workspace = true, default-features = false }
+sc-consensus-epochs = { workspace = true, default-features = false }
+sc-finality-grandpa = { workspace = true, default-features = false }
+sc-finality-grandpa-rpc = { workspace = true, default-features = false }
+sc-keystore = { workspace = true, default-features = false }
+sc-network = { workspace = true, default-features = false }
+sc-rpc-api = { workspace = true, default-features = false }
+sc-rpc = { workspace = true, default-features = false }
+sc-service = { workspace = true, default-features = false }
+sp-api = { workspace = true, default-features = false }
+sp-block-builder = { workspace = true, default-features = false }
+sp-blockchain = { workspace = true, default-features = false }
+sp-consensus = { workspace = true, default-features = false }
+sp-consensus-aura = { workspace = true, default-features = false }
+sp-core =  { workspace = true  }
+sp-keystore = { workspace = true }
+sp-offchain = { workspace = true, default-features = false }
+sp-runtime = { workspace = true, default-features = false }
+sp-storage = { workspace = true, default-features = false }
+sp-session = { workspace = true, default-features = false }
+sp-transaction-pool = { workspace = true, default-features = false }
+sc-transaction-pool = { workspace = true, default-features = false }
+sc-transaction-pool-api = { workspace = true, default-features = false }
+substrate-frame-rpc-system = { workspace = true, default-features = false }
+tokio = { workspace = true, features = ["macros", "sync"] }
+evm = { workspace = true, default-features = false, features = [ "with-codec" ] }
+pallet-ethereum = { workspace = true, features = ["runtime-benchmarks"] }
+fc-rpc = { workspace = true, default-features = false }
+fp-rpc = { workspace = true, default-features = false }
+fc-rpc-core = { workspace = true, default-features = false }
+fc-db = { workspace = true, default-features = false }
+fp-storage = { workspace = true, default-features = false }
+fc-mapping-sync = { workspace = true, default-features = false }
 
-substrate-frame-rpc-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-tokio = { version = "1.10", features = ["macros", "sync"] }
-evm = { git = "https://github.com/rust-blockchain/evm", branch = "master", default-features = false, features = [ "with-codec" ] }
-pallet-ethereum = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", features = ["runtime-benchmarks"] }
-fc-rpc = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-fp-rpc = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-fc-rpc-core = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-fc-db = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-fp-storage = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-fc-mapping-sync = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-
-edgeware-primitives = { path = "../primitives" }
-edgeware-runtime = { path = "../runtime" }
-edgeware-executor = { path = "../executor" }
-edgeware-cli-opt = { path = "../cli-opt" }
-edgeware-rpc-txpool = { path = "../../client/rpc/txpool" }
-edgeware-rpc-primitives-txpool = { path = "../../primitives/rpc/txpool" }
-edgeware-rpc-debug = { path = "../../client/rpc/debug" }
-edgeware-rpc-primitives-debug = { path = "../../primitives/rpc/debug" }
-edgeware-rpc-trace = { path = "../../client/rpc/trace" }
+edgeware-primitives = { workspace = true }
+edgeware-runtime = { workspace = true }
+edgeware-executor = { workspace = true }
+edgeware-cli-opt = { workspace = true }
+edgeware-rpc-txpool = { workspace = true }
+edgeware-rpc-primitives-txpool = { workspace = true }
+edgeware-rpc-debug = { workspace = true }
+edgeware-rpc-primitives-debug = { workspace = true }
+edgeware-rpc-trace = { workspace = true }

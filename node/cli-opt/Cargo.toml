@@ -7,11 +7,11 @@ authors = ["Filip @ Edgeware"]
 edition = '2021'
 
 [dependencies]
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-structopt = "0.3"#{ version = "0.3.8", features=["paw"]}
-tiny-bip39 = "0.8"
-libsecp256k1 = "0.7"
-primitive-types = "0.11.1"
-sha3 = "0.10.1"
-tiny-hderive = "0.3.0"
-url = "2.2.2"
+sp-runtime = { workspace = true }
+structopt = { workspace = true }
+tiny-bip39 = { workspace = true }
+libsecp256k1 = { workspace = true }
+primitive-types = { workspace = true }
+sha3 = { workspace = true }
+tiny-hderive = { workspace = true }
+url = { workspace = true }

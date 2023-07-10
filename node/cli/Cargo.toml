@@ -25,136 +25,117 @@ required-features = []
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# third-party dependencies
-codec = { package = "parity-scale-codec", version = "3.1.2" }
-serde = { version = "1.0", features = ["derive"] }
-futures = { version = "0.3.1", features = ["compat"] }
-hex-literal = "0.3.1"
-jsonrpsee = { version = "0.13.0", features = ["server", "macros"] }
-log = "0.4.8"
-maplit = "1.0.2"
-rand = "0.7.2"
-#structopt = { version = "0.3.8", features=["paw"] }
-#paw = "1.0"
-clap = { version = "3.1.8", features = [ "derive" ], optional = true }
-
-tracing = "0.1.19"
-parking_lot = "0.12.0"
-#lock_api = "0.1.5"
-hex = "0.3.2"
-serde_json = "1.0"
+parity-scale-codec = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+futures = { workspace = true, features = ["compat"] }
+hex-literal = { workspace = true }
+jsonrpsee = { workspace = true, features = ["server", "macros"] }
+log = { workspace = true }
+maplit = { workspace = true }
+rand = { workspace = true }
+clap = { workspace = true, features = [ "derive" ], optional = true }
+tracing = { workspace = true }
+parking_lot = { workspace = true }
+hex = { workspace = true }
+serde_json = { workspace = true }
 
 # primitives
-sp-authority-discovery = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-consensus-aura = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-core =  { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false  }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-timestamp = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-inherents = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-#sp-keyring = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+sp-authority-discovery = { workspace = true, default-features = false }
+sp-blockchain = { workspace = true, default-features = false }
+sp-consensus-aura = { workspace = true, default-features = false }
+sp-finality-grandpa = { workspace = true, default-features = false }
+sp-core =  { workspace = true, default-features = false  }
+sp-runtime = { workspace = true, default-features = false }
+sp-timestamp = { workspace = true, default-features = false }
+sp-inherents = { workspace = true, default-features = false }
+sp-io = { workspace = true, default-features = false }
+sp-consensus = { workspace = true, default-features = false }
+sp-transaction-pool = { workspace = true, default-features = false }
 
 # client dependencies
-sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-chain-spec = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-network = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus-aura = { path = "../consensus-transition/aura", default-features = false }
-sc-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus-slots =  { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-client-db = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-offchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-rpc = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-basic-authorship = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-service = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-tracing = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-telemetry = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-authority-discovery = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-substrate-prometheus-endpoint = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-
+sc-client-api = { workspace = true, default-features = false }
+sc-chain-spec = { workspace = true, default-features = false }
+sc-consensus = { workspace = true, default-features = false }
+sc-transaction-pool = { workspace = true, default-features = false }
+sc-network = { workspace = true, default-features = false }
+sc-consensus-aura = { workspace = true, default-features = false }
+sc-finality-grandpa = { workspace = true, default-features = false }
+sc-consensus-slots =  { workspace = true, default-features = false }
+sc-client-db = { workspace = true, default-features = false }
+sc-offchain = { workspace = true, default-features = false }
+sc-rpc = { workspace = true, default-features = false }
+sc-basic-authorship = { workspace = true, default-features = false }
+sc-service = { workspace = true, default-features = false }
+sc-tracing = { workspace = true, default-features = false }
+sc-telemetry = { workspace = true, default-features = false }
+sc-authority-discovery = { workspace = true, default-features = false }
+substrate-prometheus-endpoint = { workspace = true, default-features = false }
 
 # frame dependencies
-pallet-indices = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-timestamp = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-contracts = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-balances = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-im-online = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-authority-discovery = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-staking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-dynamic-fee = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-evm = { git = "https://github.com/rust-blockchain/evm", branch = "master", default-features = false, features = [ "with-codec" ] } #
-fp-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-pallet-evm = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", default-features = false }
-ethereum-types = { version = "0.13.1", default-features = false, features = ["rlp","codec", "std"] }
+pallet-indices = { workspace = true, default-features = false }
+pallet-timestamp = { workspace = true, default-features = false }
+pallet-contracts = { workspace = true, default-features = false }
+frame-system = { workspace = true, default-features = false }
+pallet-balances = { workspace = true, default-features = false }
+pallet-transaction-payment = { workspace = true, default-features = false }
+frame-support = { workspace = true, default-features = false }
+pallet-im-online = { workspace = true, default-features = false }
+pallet-authority-discovery = { workspace = true, default-features = false }
+pallet-staking = { workspace = true, default-features = false }
+pallet-grandpa = { workspace = true, default-features = false }
+pallet-dynamic-fee = { workspace = true, default-features = false }
+evm = { workspace = true, default-features = false, features = [ "with-codec" ] } #
+fp-evm = { workspace = true, default-features = false }
+pallet-evm = { workspace = true, default-features = false }
+ethereum-types = { workspace = true, default-features = false, features = ["rlp","codec", "std"] }
 
 # node-specific dependencies
-edgeware-runtime = { path = "../runtime" }
-edgeware-rpc = { path = "../rpc" }
-edgeware-primitives = { path = "../primitives" }
-edgeware-executor = { path = "../executor" }
-edgeware-rpc-txpool = { path = "../../client/rpc/txpool" }
-edgeware-rpc-primitives-txpool = { path = "../../primitives/rpc/txpool" }
-edgeware-rpc-debug = { path = "../../client/rpc/debug" }
-edgeware-rpc-primitives-debug = { path = "../../primitives/rpc/debug" }
-edgeware-rpc-trace = { path = "../../client/rpc/trace" }
+edgeware-runtime = { workspace = true }
+edgeware-rpc = { workspace = true }
+edgeware-primitives = { workspace = true }
+edgeware-executor = { workspace = true }
+edgeware-rpc-txpool = { workspace = true }
+edgeware-rpc-primitives-txpool = { workspace = true }
+edgeware-rpc-debug = { workspace = true }
+edgeware-rpc-primitives-debug = { workspace = true }
+edgeware-rpc-trace = { workspace = true }
 
 # CLI-specific dependencies
-sc-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true, features = ["wasmtime"] }
-frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true }
-edgeware-cli-opt = { package = "edgeware-cli-opt", path = "../cli-opt", optional = true }
-
-fc-consensus = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-fp-consensus = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-fc-rpc = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", features = ["rpc_binary_search_estimate"] }
-fp-rpc = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-fc-rpc-core = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-fc-db = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-fc-mapping-sync = { default-features = false, git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43" }
-
-# WASM-specific dependencies
-#wasm-bindgen = { version = "0.2.57", optional = true }
-#wasm-bindgen-futures = { version = "0.4.7", optional = true }
-#libp2p-wasm-ext = { version = "0.29", features = ["websocket"], optional = true }
-
-tokio = "0.2"
+sc-cli = { workspace = true, optional = true, features = ["wasmtime"] }
+frame-benchmarking-cli = { workspace = true, optional = true }
+edgeware-cli-opt = { workspace = true, optional = true }
+fc-consensus = { default-features = false, workspace = true }
+fp-consensus = { default-features = false, workspace = true }
+fc-rpc = { default-features = false, workspace = true, features = ["rpc_binary_search_estimate"] }
+fp-rpc = { default-features = false, workspace = true }
+fc-rpc-core = { default-features = false, workspace = true }
+fc-db = { default-features = false, workspace = true }
+fc-mapping-sync = { default-features = false, workspace = true }
+tokio = { workspace = true }
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
-edgeware-executor = { path = "../executor", features = [ "wasmtime" ] }
+edgeware-executor = { workspace = true, features = [ "wasmtime" ] }
 
 [dev-dependencies]
-sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-consensus-epochs = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-
-futures = "0.3.4"
-tempfile = "3.1.0"
-assert_cmd = "1.0"
-nix = "0.17"
-serde_json = "1.0"
-regex = "1"
-platforms = "2.0.0"
-clap = { version = "3.1.8", features = [ "derive" ] }
+sc-keystore = { workspace = true, default-features = false }
+sc-consensus = { workspace = true, default-features = false }
+sc-consensus-epochs = { workspace = true, default-features = false }
+futures = { workspace = true }
+tempfile = { workspace = true }
+assert_cmd = { workspace = true }
+nix = { workspace = true }
+serde_json = { workspace = true }
+regex = { workspace = true }
+platforms = { workspace = true }
+clap = { workspace = true, features = [ "derive" ] }
 
 [build-dependencies]
-clap = { version = "3.1.8", features = [ "derive" ], optional = true }
-
-#structopt = { version = "0.3.8", features=["paw"] }
-#paw = "1.0"
-#structopt = { version = "0.3.8", features=["paw"] , optional = true } #{ version = "0.3.8", features=["paw"] }
-frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true }
-substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true }
-substrate-frame-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true }
-sc-cli = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", optional = true, features = ["wasmtime"] }
-edgeware-cli-opt = { package = "edgeware-cli-opt", path = "../cli-opt", optional = true }
+clap = { workspace = true, features = [ "derive" ], optional = true }
+frame-benchmarking-cli = { workspace = true, optional = true }
+substrate-build-script-utils = { workspace = true, optional = true }
+substrate-frame-cli = { workspace = true, optional = true }
+sc-cli = { workspace = true, optional = true, features = ["wasmtime"] }
+edgeware-cli-opt = { workspace = true, optional = true }
 
 [features]
 default = [ "cli" ]

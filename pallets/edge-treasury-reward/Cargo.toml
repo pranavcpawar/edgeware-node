@@ -10,27 +10,27 @@ description = "Edgeware treasury reward module"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-serde = { version = "1.0", default-features = false, optional = true }
-scale-info = { version = "2.1.2", default-features = false, features = ["derive"] }
-codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
-sp-std = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-authorship = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-balances = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-treasury = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+serde = { workspace = true, default-features = false, optional = true }
+scale-info = { workspace = true, default-features = false, features = ["derive"] }
+parity-scale-codec = { workspace = true, default-features = false, features = ["derive"] }
+sp-std = { workspace = true, default-features = false }
+sp-runtime = { workspace = true, default-features = false }
+frame-support = { workspace = true, default-features = false }
+frame-system = { workspace = true, default-features = false }
+pallet-authorship = { workspace = true, default-features = false }
+pallet-balances = { workspace = true, default-features = false }
+pallet-treasury = { workspace = true, default-features = false }
 
 [dev-dependencies]
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+sp-io = { workspace = true, default-features = false }
+sp-core = { workspace = true, default-features = false }
 
 [features]
 default = ["std"]
 std = [
 	"serde",
 	"scale-info/std",
-	"codec/std",
+	"parity-scale-codec/std",
 	"sp-std/std",
 	"sp-runtime/std",
 	"pallet-authorship/std",

@@ -10,26 +10,26 @@ description = "Edgeware runtime primitives"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-bstringify = "0.1.2"
-serde = { version = "1.0", default-features = false, optional = true }
-codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
-num_enum = { version = "0.5.1", default-features = false }
-scale-info = { version = "2.1.2", default-features = false, features = ["derive"] }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-application-crypto = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-std = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+bstringify = { workspace = true }
+serde = { workspace = true, default-features = false, optional = true }
+parity-scale-codec = { workspace = true, default-features = false, features = ["derive"] }
+num_enum = { workspace = true, default-features = false }
+scale-info = { workspace = true, default-features = false, features = ["derive"] }
+frame-system = { workspace = true, default-features = false }
+sp-application-crypto = { workspace = true, default-features = false }
+sp-core = { workspace = true, default-features = false }
+sp-runtime = { workspace = true, default-features = false }
+sp-std = { workspace = true, default-features = false }
 
 [dev-dependencies]
-#sp-serializer = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-#pretty_assertions = "0.6.1"
+#sp-serializer = { workspace = true }
+#pretty_assertions = { workspace = true }
 
 [features]
 default = ["std"]
 std = [
 	"serde",
-	"codec/std",
+	"parity-scale-codec/std",
 	"num_enum/std",
 	"scale-info/std",
 	"frame-system/std",

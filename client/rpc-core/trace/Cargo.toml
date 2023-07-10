@@ -8,12 +8,10 @@ repository = "https://github.com/PureStake/moonbeam/"
 version = "0.6.0"
 
 [dependencies]
-ethereum-types = "0.13.1"
-futures = { version = "0.3.1", features = [ "compat" ] }
-jsonrpc-core = "18.0.0"
-jsonrpc-core-client = "18.0.0"
-jsonrpc-derive = "18.0.0"
-edgeware-client-evm-tracing = { path = "../../evm-tracing" }
-edgeware-rpc-core-types = { path = "../types" }
-serde = { version = "1.0", features = [ "derive" ] }
-serde_json = "1.0"
+ethereum-types = { workspace = true, features = [ "std" ] }
+futures = { workspace = true, features = [ "compat" ] }
+jsonrpsee = { workspace = true, features = [ "macros", "server" ] }
+edgeware-client-evm-tracing = { workspace = true }
+edgeware-rpc-core-types = { workspace = true }
+serde = { workspace = true, features = [ "derive" ] }
+serde_json = { workspace = true }

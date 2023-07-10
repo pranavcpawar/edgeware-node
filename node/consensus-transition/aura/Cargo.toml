@@ -13,37 +13,37 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-sp-application-crypto = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-consensus-aura = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-block-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-block-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-codec = { package = "parity-scale-codec", version = "3.0.0" }
-sp-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-consensus-slots = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-thiserror = "1.0"
-futures = "0.3.21"
-sp-inherents = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-log = "0.4.8"
-sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-consensus-slots = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sc-service = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-sp-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-keystore = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-telemetry = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-async-trait = "0.1.50"
+sp-application-crypto = { workspace = true }
+sp-consensus-aura = { workspace = true }
+sp-block-builder = { workspace = true }
+sc-block-builder = { workspace = true }
+sc-client-api = { workspace = true }
+sp-consensus = { workspace = true }
+sc-consensus = { workspace = true }
+sp-consensus-slots = { workspace = true }
+sp-inherents = { workspace = true }
+sp-core = { workspace = true }
+sp-blockchain = { workspace = true }
+sc-consensus-slots = { workspace = true, default-features = false }
+sc-service = { workspace = true, default-features = false }
+sp-api = { workspace = true }
+sp-runtime = { workspace = true }
+sp-keystore = { workspace = true }
+sc-telemetry = { workspace = true }
+prometheus-endpoint = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+log = { workspace = true }
+futures = { workspace = true }
+parity-scale-codec = { workspace = true }
 
 [dev-dependencies]
-sp-timestamp = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-keyring = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-tracing = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-network = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-network-test = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-substrate-test-runtime-client = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-tempfile = "3.1.0"
-parking_lot = "0.12.0"
+sp-timestamp = { workspace = true }
+sp-keyring = { workspace = true }
+sp-tracing = { workspace = true }
+sc-keystore = { workspace = true }
+sc-network = { workspace = true }
+sc-network-test = { workspace = true }
+substrate-test-runtime-client = { workspace = true }
+tempfile = { workspace = true }
+parking_lot = { workspace = true }

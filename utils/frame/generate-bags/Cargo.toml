@@ -11,15 +11,15 @@ readme = "README.md"
 
 [dependencies]
 # FRAME
-frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-election-provider-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
-pallet-staking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+frame-support = { workspace = true, default-features = false }
+frame-election-provider-support = { workspace = true, default-features = false }
+frame-system = { workspace = true, default-features = false }
+pallet-staking = { workspace = true, default-features = false }
 
 # primitives
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", default-features = false }
+sp-io = { workspace = true, default-features = false }
 
 # third party
-chrono = { version = "0.4.19" }
-git2 = { version = "0.13.25", default-features = false }
-num-format = { version = "0.4.0" }
+chrono = { workspace = true }
+git2 = { workspace = true, default-features = false }
+num-format = { workspace = true }

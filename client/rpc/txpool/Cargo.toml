@@ -8,26 +8,26 @@ repository = "https://github.com/PureStake/moonbeam/"
 version = "0.6.0"
 
 [dependencies]
-jsonrpc-core = "18.0.0"
-rlp = "0.5"
-serde = { version = "1.0", features = [ "derive" ] }
-sha3 = "0.9"
+jsonrpsee = { workspace = true, features = [ "macros", "server" ] }
+rlp = { workspace = true }
+serde = { workspace = true, features = [ "derive" ] }
+sha3 = { workspace = true }
 
-# Moonbeam
-edgeware-rpc-core-txpool = { path = "../../rpc-core/txpool" }
-edgeware-rpc-primitives-txpool = { path = "../../../primitives/rpc/txpool" }
+# Edgeware - client & wasm
+edgeware-rpc-core-txpool = { workspace = true }
+edgeware-rpc-primitives-txpool = { workspace = true, features = [ "std" ] }
 
-# Substrate
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-transaction-pool-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-std = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
+# Substrate - client & wasm
+frame-system = { workspace = true }
+sc-transaction-pool = { workspace = true }
+sc-transaction-pool-api = { workspace = true }
+sp-api = { workspace = true }
+sp-blockchain = { workspace = true }
+sp-io = { workspace = true }
+sp-runtime = { workspace = true }
+sp-std = { workspace = true }
 
-# Frontier
-ethereum-types = "0.13.1"
-evm = { git = "https://github.com/rust-blockchain/evm", branch = "master", default-features = false, features = [ "with-codec" ] } # 
-fc-rpc = { git = "https://github.com/paritytech/frontier", branch = "polkadot-0.9.43", features = [ "rpc_binary_search_estimate" ] }
+# Frontier - client & wasm
+ethereum-types = { workspace = true, features = [ "std" ] }
+evm = { workspace = true, default-features = false, features = [ "with-codec" ] }
+fc-rpc = { workspace = true }

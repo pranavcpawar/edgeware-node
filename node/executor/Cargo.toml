@@ -10,32 +10,32 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-trie-root = "0.16.0"
-codec = { package = "parity-scale-codec", version = "3.1.2" }
-sp-io = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sp-state-machine = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-sc-executor = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43", features = ["wasmtime"] }
-sp-core =  { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43"  }
-sp-trie = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-frame-benchmarking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
+trie-root = { workspace = true }
+parity-scale-codec = { workspace = true }
+sp-io = { workspace = true }
+sp-state-machine = { workspace = true }
+sc-executor = { workspace = true, features = ["wasmtime"] }
+sp-core =  { workspace = true  }
+sp-trie = { workspace = true }
+frame-benchmarking = { workspace = true }
 
-edgeware-primitives = { version = "4.0.0", path = "../primitives" }
-edgeware-runtime = { version = "4.0.0", path = "../runtime" }
-edgeware-runtime-interface = { version = "4.0.0", path = "../runtime-interface" }
+edgeware-primitives = { version = "4.0.0", workspace = true }
+edgeware-runtime = { version = "4.0.0", workspace = true }
+edgeware-runtime-interface = { version = "4.0.0", workspace = true }
 
 [dev-dependencies]
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-frame-support = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-balances = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-session = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-timestamp = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-treasury = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-grandpa = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-pallet-indices = { git = "https://github.com/paritytech/substrate", branch = "polkadot-0.9.43" }
-wabt = "0.10.0"
-criterion = "0.3.0"
+sp-runtime = { workspace = true }
+frame-support = { workspace = true }
+pallet-balances = { workspace = true }
+pallet-transaction-payment = { workspace = true }
+pallet-session = { workspace = true }
+frame-system = { workspace = true }
+pallet-timestamp = { workspace = true }
+pallet-treasury = { workspace = true }
+pallet-grandpa = { workspace = true }
+pallet-indices = { workspace = true }
+wabt = { workspace = true }
+criterion = { workspace = true }
 
 [features]
 wasmtime = [

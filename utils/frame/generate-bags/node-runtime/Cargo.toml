@@ -10,8 +10,8 @@ description = "Bag threshold generation script for pallet-bag-list and node-runt
 readme = "README.md"
 
 [dependencies]
-edgeware-runtime = { version = "4.0.0", path = "../../../../node/runtime" }
-generate-bags = { version = "4.0.0-dev", path = "../" }
+edgeware-runtime = { workspace = true }
+generate-bags = { workspace = true }
 
 # third-party
-clap = { version = "3.1.6", features = ["derive"] }
+clap = { workspace = true, features = ["derive"] }
